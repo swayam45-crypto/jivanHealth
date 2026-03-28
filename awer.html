@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-Content-Type-Options" content="nosniff"/>
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN"/>
+<meta name="referrer" content="strict-origin-when-cross-origin"/>
+<script>(function(){var s=localStorage.getItem('jivan-dark');var p=window.matchMedia('(prefers-color-scheme:dark)').matches;if(s!==null?s==='true':p)document.documentElement.classList.add('dark');})();</script>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Health Awareness — Jivan TeleHealth</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="jivan-backend.js"></script>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#0ea5e9","secondary":"#14b8a6","background-light":"#f8fafc","background-dark":"#0f172a"},fontFamily:{"display":["Public Sans","sans-serif"]}}}}</script>
+<style>
+body{font-family:'Public Sans',sans-serif;}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}
+#mobile-drawer{transition:transform 0.3s ease;}
+.cat-btn.active{background:#0ea5e9;color:white;}
+#article-modal{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.55);overflow-y:auto;padding:1.5rem 1rem;}
+#article-modal.open{display:flex;align-items:flex-start;justify-content:center;}
+#article-modal-box{background:white;border-radius:1.5rem;max-width:720px;width:100%;box-shadow:0 30px 60px rgba(0,0,0,.25);overflow:hidden;margin:auto;}
+.dark #article-modal-box{background:#1e293b;}
+.prose-content h2{font-size:1.15rem;font-weight:800;margin:1.4rem 0 .5rem;color:#0f172a;}
+.dark .prose-content h2{color:#f1f5f9;}
+.prose-content h3{font-size:1rem;font-weight:700;margin:1.1rem 0 .4rem;color:#1e293b;}
+.dark .prose-content h3{color:#e2e8f0;}
+.prose-content p{font-size:.875rem;line-height:1.75;color:#475569;margin-bottom:.8rem;}
+.dark .prose-content p{color:#94a3b8;}
+.prose-content ul{margin:.5rem 0 1rem 1.2rem;list-style:disc;}
+.prose-content ul li{font-size:.875rem;line-height:1.7;color:#475569;margin-bottom:.3rem;}
+.dark .prose-content ul li{color:#94a3b8;}
+.prose-content .highlight{background:#f0f9ff;border-left:4px solid #0ea5e9;padding:.75rem 1rem;border-radius:0 .75rem .75rem 0;margin:1rem 0;}
+.dark .prose-content .highlight{background:#0c2340;border-color:#0ea5e9;}
+.prose-content .highlight p{color:#0369a1;margin:0;}
+.dark .prose-content .highlight p{color:#7dd3fc;}
+.prose-content .warn{background:#fff7ed;border-left:4px solid #f97316;padding:.75rem 1rem;border-radius:0 .75rem .75rem 0;margin:1rem 0;}
+.dark .prose-content .warn{background:#1c0a00;}
+.prose-content .warn p{color:#c2410c;margin:0;}
+.dark .prose-content .warn p{color:#fb923c;}
+.prose-content .success{background:#f0fdf4;border-left:4px solid #22c55e;padding:.75rem 1rem;border-radius:0 .75rem .75rem 0;margin:1rem 0;}
+.dark .prose-content .success{background:#052e16;}
+.prose-content .success p{color:#15803d;margin:0;}
+.dark .prose-content .success p{color:#4ade80;}
+.step-num{width:2rem;height:2rem;background:#0ea5e9;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85rem;flex-shrink:0;}
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+
+<!-- Mobile overlay -->
+<div id="menu-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" onclick="MobileMenu.close()"></div>
+<div id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 bg-white dark:bg-slate-900 z-50 shadow-2xl -translate-x-full flex flex-col">
+  <div class="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800">
+    <span class="font-extrabold text-primary">Jivan TeleHealth</span>
+    <button onclick="MobileMenu.close()"><span class="material-symbols-outlined">close</span></button>
+  </div>
+  <nav class="flex flex-col gap-1 p-4">
+    <a href="index.html" class="px-4 py-3 rounded-xl hover:bg-primary/10 font-semibold text-sm">🏠 Home</a>
+    <a href="health.html" class="px-4 py-3 rounded-xl hover:bg-primary/10 font-semibold text-sm">📋 Health Records</a>
+    <a href="call.html" class="px-4 py-3 rounded-xl hover:bg-primary/10 font-semibold text-sm">👨‍⚕️ Consult Doctor</a>
+    <a href="emg.html" class="px-4 py-3 rounded-xl hover:bg-red-50 text-red-500 font-semibold text-sm">🚨 Emergency</a>
+  </nav>
+</div>
+
+<!-- Header -->
+<header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-4 md:px-10 py-4 bg-white dark:bg-slate-900 sticky top-0 z-30">
+  <a href="index.html" class="flex items-center gap-3">
+    <span class="material-symbols-outlined text-3xl text-primary">health_and_safety</span>
+    <span class="font-bold text-xl text-slate-900 dark:text-white hidden sm:block">Jivan TeleHealth</span>
+  </a>
+  <div class="flex items-center gap-3">
+    <div class="relative hidden sm:block">
+      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+      <input oninput="searchArticles(this.value)" class="pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none w-48" placeholder="Search articles..."/>
+    </div>
+    <button onclick="DarkMode.toggle()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+      <span class="material-symbols-outlined text-[20px]" data-dark-icon>dark_mode</span>
+    </button>
+    <button onclick="MobileMenu.open()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 sm:hidden"><span class="material-symbols-outlined">menu</span></button>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-10 space-y-10">
+  <!-- Hero -->
+  <div class="text-center max-w-2xl mx-auto">
+    <span class="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-widest uppercase bg-secondary/10 text-secondary rounded-full">Health Library</span>
+    <h1 class="text-4xl font-black mb-3">Health Awareness Hub</h1>
+    <p class="text-slate-500 text-lg">Expert tips, government schemes, and preventive care guides — click any article to read the full guide.</p>
+  </div>
+
+  <!-- Categories -->
+  <div class="flex gap-2 flex-wrap justify-center">
+    <button class="cat-btn active px-4 py-2 rounded-full text-sm font-bold border border-primary/30 transition-all" onclick="filterCat('all',this)">All Topics</button>
+    <button class="cat-btn px-4 py-2 rounded-full text-sm font-bold bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white border border-transparent transition-all" onclick="filterCat('scheme',this)">🏛️ Govt. Schemes</button>
+    <button class="cat-btn px-4 py-2 rounded-full text-sm font-bold bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white border border-transparent transition-all" onclick="filterCat('hygiene',this)">🧼 Hygiene Tips</button>
+    <button class="cat-btn px-4 py-2 rounded-full text-sm font-bold bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white border border-transparent transition-all" onclick="filterCat('diet',this)">🥗 Diet & Nutrition</button>
+    <button class="cat-btn px-4 py-2 rounded-full text-sm font-bold bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white border border-transparent transition-all" onclick="filterCat('mental',this)">🧠 Mental Health</button>
+    <button class="cat-btn px-4 py-2 rounded-full text-sm font-bold bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white border border-transparent transition-all" onclick="filterCat('emergency',this)">🚑 Emergency First Aid</button>
+    <button class="cat-btn px-4 py-2 rounded-full text-sm font-bold bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white border border-transparent transition-all" onclick="filterCat('news',this)">📰 Health News</button>
+  </div>
+
+  <!-- Articles Grid -->
+  <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+  <!-- Featured Schemes -->
+  <div>
+    <h2 class="text-2xl font-black mb-6 flex items-center gap-2"><span class="material-symbols-outlined text-secondary">assured_workload</span> Featured Government Schemes</h2>
+    <div class="grid lg:grid-cols-2 gap-6">
+      <div class="bg-secondary/5 dark:bg-secondary/10 rounded-3xl p-8 flex flex-col md:flex-row gap-6 items-center border border-secondary/20 cursor-pointer hover:shadow-lg transition-shadow" onclick="openArticle('pmjay')">
+        <div class="flex-1">
+          <span class="text-secondary font-bold text-xs tracking-widest uppercase mb-3 block">Government Scheme</span>
+          <h3 class="text-2xl font-bold mb-3 leading-tight">PM-JAY Ayushman Bharat Coverage Guide</h3>
+          <p class="text-slate-500 dark:text-slate-400 mb-5 text-sm leading-relaxed">Avail cashless treatment up to ₹5 Lakhs at empanelled hospitals. Over 10 crore families covered. Click to read the full guide.</p>
+          <span class="text-secondary font-bold flex items-center gap-2 text-sm">
+            Read Full Guide <span class="material-symbols-outlined text-lg">arrow_right_alt</span>
+          </span>
+        </div>
+        <div class="w-28 h-28 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary shrink-0">
+          <span class="material-symbols-outlined text-5xl">assured_workload</span>
+        </div>
+      </div>
+      <div class="bg-primary/5 dark:bg-primary/10 rounded-3xl p-8 flex flex-col md:flex-row gap-6 items-center border border-primary/20 cursor-pointer hover:shadow-lg transition-shadow" onclick="openArticle('hygiene')">
+        <div class="flex-1">
+          <span class="text-primary font-bold text-xs tracking-widest uppercase mb-3 block">Daily Hygiene</span>
+          <h3 class="text-2xl font-bold mb-3 leading-tight">Preventive Care: Modern Hygiene Practices</h3>
+          <p class="text-slate-500 dark:text-slate-400 mb-5 text-sm leading-relaxed">Expert-backed advice on seasonal disease prevention and maintaining a clean, healthy environment at home.</p>
+          <span class="text-primary font-bold flex items-center gap-2 text-sm">
+            Read Full Guide <span class="material-symbols-outlined text-lg">arrow_right_alt</span>
+          </span>
+        </div>
+        <div class="w-28 h-28 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shrink-0">
+          <span class="material-symbols-outlined text-5xl">clean_hands</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Newsletter -->
+  <div class="bg-slate-900 dark:bg-slate-800 rounded-3xl p-8 text-white text-center">
+    <span class="material-symbols-outlined text-4xl text-primary mb-3 block">notifications_active</span>
+    <h2 class="text-2xl font-black mb-2">Stay Updated with Health Tips</h2>
+    <p class="text-slate-400 mb-6">Get weekly health awareness articles, scheme updates, and expert tips directly in your inbox.</p>
+    <div class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+      <input id="newsletter-email" type="email" placeholder="your@email.com" class="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 text-sm outline-none focus:border-primary"/>
+      <button onclick="subscribeNewsletter()" class="px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-all text-sm whitespace-nowrap">Subscribe</button>
+    </div>
+  </div>
+</main>
+
+<footer class="border-t border-slate-200 dark:border-slate-800 py-6 bg-white dark:bg-slate-900 px-4 mt-8">
+  <p class="text-center text-xs text-slate-400">© <span data-year></span> Jivan TeleHealth Connect</p>
+</footer>
+
+<!-- Article Detail Modal -->
+<div id="article-modal" onclick="if(event.target===this)closeModal()">
+  <div id="article-modal-box">
+    <!-- Header bar -->
+    <div id="modal-header" class="px-6 py-5 flex items-start justify-between gap-4" style="background:#0ea5e9;">
+      <div>
+        <span id="modal-tag" class="text-xs font-black text-white/70 uppercase tracking-widest block mb-1"></span>
+        <h2 id="modal-title" class="text-xl font-black text-white leading-snug"></h2>
+        <p id="modal-meta" class="text-white/70 text-xs mt-1"></p>
+      </div>
+      <button onclick="closeModal()" class="mt-1 w-8 h-8 flex items-center justify-center rounded-xl bg-white/20 text-white hover:bg-white/30 transition shrink-0" aria-label="Close">
+        <span class="material-symbols-outlined text-lg">close</span>
+      </button>
+    </div>
+    <!-- Body -->
+    <div id="modal-body" class="prose-content px-6 py-6 overflow-y-auto" style="max-height:70vh;"></div>
+    <!-- Footer -->
+    <div class="px-6 py-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 flex-wrap">
+      <span class="text-xs text-slate-400">Jivan TeleHealth Health Library</span>
+      <div class="flex gap-2">
+        <button onclick="closeModal()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition">Close</button>
+        <a href="call.html" class="px-4 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">videocam</span> Consult Doctor
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
+
+<script>
+/* ─── Article + Scheme full content database ─────────────────────────────── */
+const CONTENT = {
+  /* ── GOVERNMENT SCHEMES ─────────────────────────────────────────────── */
+  pmjay: {
+    tag: 'Government Scheme', color: '#14b8a6', time: '5 min read',
+    title: 'PM-JAY Ayushman Bharat — Complete Guide',
+    body: `
+      <div class="highlight"><p>💡 <strong>PM-JAY</strong> provides cashless health coverage of <strong>₹5 Lakh per family per year</strong> for secondary and tertiary care at empanelled hospitals — completely free for eligible families.</p></div>
+      <h2>What is Ayushman Bharat PM-JAY?</h2>
+      <p>Pradhan Mantri Jan Arogya Yojana (PM-JAY) is the world's largest government-funded health insurance scheme, launched in 2018. It covers over <strong>12 crore poor and vulnerable families</strong> (approximately 55 crore beneficiaries) across India.</p>
+      <h2>Who is Eligible?</h2>
+      <ul>
+        <li>Families listed in the <strong>Socio-Economic Caste Census (SECC) 2011</strong> database</li>
+        <li>Active beneficiaries of the <strong>Rashtriya Swasthya Bima Yojana (RSBY)</strong></li>
+        <li>Families in rural areas with specific deprivation criteria (no income limit if SECC listed)</li>
+        <li>Urban workers in 11 occupational categories</li>
+      </ul>
+      <div class="warn"><p>⚠️ There is <strong>no age, family size, or gender restriction</strong> — all listed members are covered.</p></div>
+      <h2>What is Covered? (1,949 Medical Procedures)</h2>
+      <ul>
+        <li>🏥 All pre and post-hospitalization expenses (3 days pre / 15 days post)</li>
+        <li>💊 Medicines, diagnostics, and consumables during hospitalization</li>
+        <li>❤️ Cardiology — bypass surgery, angioplasty, valve replacement</li>
+        <li>🧠 Neurology — brain surgery, spinal procedures</li>
+        <li>🦴 Orthopaedics — knee/hip replacement, fracture management</li>
+        <li>🔬 Oncology — cancer surgeries, chemotherapy, radiation</li>
+        <li>👁️ Ophthalmology — cataract surgery, vitrectomy</li>
+        <li>👶 Maternity — delivery (normal and caesarean), newborn care</li>
+        <li>🫁 Pulmonology — TB treatment, COPD management</li>
+        <li>🩺 ICU stay — covered at empanelled private and government hospitals</li>
+      </ul>
+      <h2>How to Check Your Eligibility</h2>
+      <div class="flex flex-col gap-3 my-3">
+        <div class="flex items-start gap-3"><div class="step-num">1</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Visit</strong> <a href="https://pmjay.gov.in" target="_blank" rel="noopener" class="text-primary underline">pmjay.gov.in</a> or call the helpline <strong>14555</strong></p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">2</div><div><p style="margin:0;font-size:.875rem;color:#475569;">Enter your <strong>mobile number</strong> or <strong>ration card number</strong> to check if your family is listed</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">3</div><div><p style="margin:0;font-size:.875rem;color:#475569;">If eligible, visit the nearest <strong>Common Service Centre (CSC)</strong> or empanelled hospital with Aadhaar to get your <strong>e-card</strong></p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">4</div><div><p style="margin:0;font-size:.875rem;color:#475569;">Show the e-card at any empanelled hospital for <strong>cashless admission</strong> — no payment needed</p></div></div>
+      </div>
+      <h2>How to Use at a Hospital</h2>
+      <ul>
+        <li>Walk in to the hospital's <strong>PMJAY Help Desk</strong></li>
+        <li>Show your Ayushman card + Aadhaar for verification</li>
+        <li>The hospital does all paperwork — you pay <strong>nothing</strong> for covered treatments</li>
+        <li>Medicines, diagnostics, and surgeon fees are all included</li>
+      </ul>
+      <div class="success"><p>✅ There are <strong>25,000+ empanelled hospitals</strong> across India including major private hospitals. Search at <a href="https://hospitals.pmjay.gov.in" target="_blank" rel="noopener" class="underline" style="color:#15803d;">hospitals.pmjay.gov.in</a></p></div>
+      <h2>Important Numbers</h2>
+      <ul>
+        <li>📞 Helpline: <strong>14555</strong> (toll-free, 24×7)</li>
+        <li>📞 Grievance: <strong>1800-111-565</strong></li>
+        <li>🌐 Website: <a href="https://pmjay.gov.in" target="_blank" rel="noopener" class="text-primary underline">pmjay.gov.in</a></li>
+      </ul>
+    `
+  },
+  pmjay_vs_state: {
+    tag: 'Government Scheme', color: '#14b8a6', time: '6 min read',
+    title: 'PM-JAY vs State Health Schemes: Know Your Rights',
+    body: `
+      <div class="highlight"><p>💡 Many states have their own health schemes that <strong>complement or extend</strong> PM-JAY coverage. Knowing both can help you access maximum benefits.</p></div>
+      <h2>Central vs State Schemes — Key Differences</h2>
+      <p>India has a two-tier health insurance system. The central government runs PM-JAY, while states run their own programmes — some of which offer higher coverage, additional diseases, or cover different population groups.</p>
+      <h2>Major State Schemes</h2>
+      <h3>🟢 Maharashtra — Mahatma Jyotiba Phule Jan Arogya Yojana (MJPJAY)</h3>
+      <ul>
+        <li>Coverage: ₹1.5 Lakh per family (extends to ₹5L when integrated with PM-JAY)</li>
+        <li>Includes farmers, BPL families, and those affected by droughts</li>
+        <li>2,000+ procedures covered including organ transplants</li>
+        <li>Helpline: <strong>155388</strong></li>
+      </ul>
+      <h3>🔵 Karnataka — Arogya Karnataka</h3>
+      <ul>
+        <li>Covers all residents of Karnataka — not just BPL families</li>
+        <li>OPD coverage included (unlike PM-JAY which is only hospitalization)</li>
+        <li>Coverage up to ₹5 Lakh for BPL and ₹1.5 Lakh for APL families</li>
+      </ul>
+      <h3>🟡 Tamil Nadu — Chief Minister's Comprehensive Health Insurance</h3>
+      <ul>
+        <li>Coverage: ₹5 Lakh per family per year</li>
+        <li>Covers families earning up to ₹72,000/year</li>
+        <li>Over 1,100 procedures including liver/kidney transplants</li>
+      </ul>
+      <h3>🟠 Andhra Pradesh — YSR Aarogyasri</h3>
+      <ul>
+        <li>Coverage: ₹5 Lakh per family — integrated with PM-JAY</li>
+        <li>Pre-existing diseases covered from Day 1</li>
+        <li>Covers all BPL families with white ration cards</li>
+      </ul>
+      <h3>🔴 Delhi — Delhi Arogya Kosh</h3>
+      <ul>
+        <li>Free OPD, medicines, and diagnostics at government hospitals</li>
+        <li>Mohalla Clinics provide primary care free of cost</li>
+      </ul>
+      <div class="warn"><p>⚠️ If you are covered by both PM-JAY and a state scheme, you can claim under <strong>whichever gives the highest benefit</strong> for your specific procedure. You don't have to choose one.</p></div>
+      <h2>How to Use Both Schemes Together</h2>
+      <ul>
+        <li>Carry both your PM-JAY e-card and state scheme card to the hospital</li>
+        <li>Ask the hospital's insurance help desk which scheme covers your procedure better</li>
+        <li>For procedures above ₹5L, you may be able to combine both schemes (state-specific rules apply)</li>
+        <li>You can never be charged for covered procedures — escalate to 14555 if asked to pay</li>
+      </ul>
+      <div class="success"><p>✅ <strong>Tip:</strong> Always check with your state's health department website for the most current list of covered procedures, as both PM-JAY and state schemes are updated regularly.</p></div>
+    `
+  },
+  /* ── HYGIENE ─────────────────────────────────────────────────────────── */
+  hygiene: {
+    tag: 'Hygiene', color: '#0ea5e9', time: '3 min read',
+    title: 'Hand Hygiene: 7-Step WHO Method That Saves Lives',
+    body: `
+      <div class="highlight"><p>💡 Proper handwashing eliminates up to <strong>80% of common infections</strong> including diarrhoea, respiratory disease, and skin infections. It is the single most effective public health intervention.</p></div>
+      <h2>Why Hand Hygiene Matters</h2>
+      <p>Your hands touch hundreds of surfaces daily — door handles, phones, money, public transport. Germs transfer from these surfaces to your eyes, nose, and mouth every time you touch your face (an average of 23 times per hour). Washing hands correctly breaks this chain.</p>
+      <h2>The WHO 7-Step Handwashing Technique</h2>
+      <div class="flex flex-col gap-3 my-3">
+        <div class="flex items-start gap-3"><div class="step-num">1</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Wet & Lather:</strong> Wet hands with clean running water, apply enough soap to cover all surfaces</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">2</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Palms:</strong> Rub palms together in a circular motion — 5 rotations minimum</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">3</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Back of hands:</strong> Right palm over left dorsum with interlaced fingers — repeat for other hand</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">4</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Interlaced fingers:</strong> Rub palms together with fingers interlaced to clean between fingers</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">5</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Backs of fingers:</strong> Backs of fingers against palms with fingers interlocked</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">6</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Thumbs:</strong> Rotational rubbing of right thumb in left palm — repeat for other thumb</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">7</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Fingertips & Rinse:</strong> Rotational rubbing of clasped fingertips of right hand in left palm, then rinse thoroughly with water and dry with a clean towel</p></div></div>
+      </div>
+      <div class="warn"><p>⏱️ Total time should be <strong>40–60 seconds</strong> with soap and water. Using a hand sanitizer requires only 20–30 seconds.</p></div>
+      <h2>When Must You Wash Hands?</h2>
+      <ul>
+        <li>🍽️ Before and after eating or preparing food</li>
+        <li>🚽 After using the toilet</li>
+        <li>🤧 After coughing, sneezing, or blowing your nose</li>
+        <li>🐾 After touching animals or their waste</li>
+        <li>🏥 Before and after caring for a sick person</li>
+        <li>🚌 After using public transport or touching public surfaces</li>
+        <li>💊 Before taking or giving medicines</li>
+      </ul>
+      <h2>Sanitizer vs Soap — When to Use Which</h2>
+      <ul>
+        <li><strong>Soap + Water:</strong> Best choice when hands are visibly dirty or greasy, after toilet use, after touching animals</li>
+        <li><strong>Alcohol-based sanitizer (≥60% alcohol):</strong> Convenient when soap is unavailable; effective against most germs but NOT against Clostridioides difficile or norovirus</li>
+      </ul>
+      <div class="success"><p>✅ Teaching children proper handwashing can reduce their risk of diarrhoea by <strong>30%</strong> and respiratory infections by <strong>20%</strong> — WHO data.</p></div>
+    `
+  },
+  monsoon: {
+    tag: 'Prevention', color: '#3b82f6', time: '4 min read',
+    title: 'Seasonal Disease Prevention: Complete Monsoon Health Guide',
+    body: `
+      <div class="highlight"><p>🌧️ The monsoon season (June–September) brings a sharp spike in vector-borne diseases, waterborne infections, and fungal conditions. This guide helps you protect your family with practical steps.</p></div>
+      <h2>Top 5 Monsoon Diseases to Watch For</h2>
+      <h3>1. Dengue Fever</h3>
+      <ul>
+        <li><strong>Cause:</strong> Aedes aegypti mosquito bite (bites during daytime)</li>
+        <li><strong>Symptoms:</strong> High fever, severe joint pain ("breakbone fever"), rash, headache behind eyes</li>
+        <li><strong>Prevention:</strong> Eliminate stagnant water (change cooler water daily), use mosquito nets, apply repellent</li>
+        <li><strong>Warning signs:</strong> Bleeding from gums/nose, blood in urine — go to ER immediately</li>
+      </ul>
+      <h3>2. Malaria</h3>
+      <ul>
+        <li><strong>Cause:</strong> Anopheles mosquito (bites at night)</li>
+        <li><strong>Symptoms:</strong> Cyclical fever with chills every 48–72 hours, sweating, body ache</li>
+        <li><strong>Prevention:</strong> Sleep under insecticide-treated nets, use mosquito coils/repellents at dusk</li>
+      </ul>
+      <h3>3. Leptospirosis</h3>
+      <ul>
+        <li><strong>Cause:</strong> Wading through floodwater contaminated with animal urine</li>
+        <li><strong>Symptoms:</strong> High fever, red eyes, muscle pain, jaundice in severe cases</li>
+        <li><strong>Prevention:</strong> Avoid wading in floodwater; wear rubber boots if unavoidable; wash feet thoroughly after</li>
+      </ul>
+      <h3>4. Typhoid & Gastroenteritis</h3>
+      <ul>
+        <li><strong>Cause:</strong> Contaminated water and food</li>
+        <li><strong>Prevention:</strong> Drink only boiled or filtered water, avoid street food during monsoon, wash fruits/vegetables with safe water</li>
+      </ul>
+      <h3>5. Fungal Infections</h3>
+      <ul>
+        <li><strong>Cause:</strong> Humidity causing fungal growth on wet skin</li>
+        <li><strong>Prevention:</strong> Keep feet dry, change wet socks immediately, wear moisture-wicking fabrics, apply antifungal powder</li>
+      </ul>
+      <h2>Monsoon Safety Checklist</h2>
+      <ul>
+        <li>✅ Check for standing water in coolers, flower pots, tyres, and drains weekly</li>
+        <li>✅ Store drinking water in clean, covered containers</li>
+        <li>✅ Eat only freshly cooked, hot food during monsoon</li>
+        <li>✅ Boil drinking water if you are unsure of the source</li>
+        <li>✅ Wear full-sleeved clothing during evening hours</li>
+        <li>✅ Get dengue NS1 antigen test done if fever persists beyond 3 days</li>
+      </ul>
+      <div class="warn"><p>⚠️ If fever persists more than 3 days during monsoon, do NOT self-medicate with antibiotics. Get a blood test and consult a doctor immediately.</p></div>
+      <div class="success"><p>✅ Consult a Jivan doctor if you have monsoon fever symptoms — <a href="call.html" class="underline" style="color:#15803d;">Book now →</a></p></div>
+    `
+  },
+  /* ── DIET ────────────────────────────────────────────────────────────── */
+  diet_heart: {
+    tag: 'Diet & Nutrition', color: '#16a34a', time: '7 min read',
+    title: 'Balanced Indian Diet for a Healthy Heart',
+    body: `
+      <div class="highlight"><p>❤️ Heart disease is India's #1 killer. A well-planned Indian diet rich in traditional ingredients can reduce your cardiovascular risk by up to <strong>35%</strong> — ICMR data.</p></div>
+      <h2>The Heart-Healthy Indian Plate</h2>
+      <p>The good news: traditional Indian cooking already contains many heart-protective ingredients. The key is knowing what to eat more of, what to moderate, and what to avoid.</p>
+      <h2>✅ Eat More Of These</h2>
+      <ul>
+        <li><strong>Oats & Daliya:</strong> Beta-glucan fibre lowers LDL cholesterol significantly</li>
+        <li><strong>Dal (lentils & legumes):</strong> High in soluble fibre and plant protein; eat daily</li>
+        <li><strong>Leafy greens (Palak, Methi, Sarson):</strong> Rich in folate, Vitamin K, and antioxidants</li>
+        <li><strong>Nuts (Walnuts, Almonds):</strong> Omega-3 fatty acids, magnesium — a small handful daily</li>
+        <li><strong>Flaxseeds (Alsi):</strong> Highest plant-based omega-3 source; add to roti dough</li>
+        <li><strong>Turmeric (Haldi):</strong> Curcumin is anti-inflammatory; use daily in cooking</li>
+        <li><strong>Fish (Rohu, Hilsa):</strong> 2–3 servings per week provide EPA/DHA omega-3</li>
+        <li><strong>Whole grains:</strong> Brown rice, bajra, jowar, ragi instead of refined flour</li>
+        <li><strong>Amla (Indian Gooseberry):</strong> Highest natural source of Vitamin C; protects vessel walls</li>
+      </ul>
+      <h2>⚠️ Moderate These</h2>
+      <ul>
+        <li><strong>Ghee:</strong> 1 teaspoon per day is fine — but not more. Choose A2 ghee if possible.</li>
+        <li><strong>Eggs:</strong> 1 egg per day is safe for most people (not more for those with diabetes)</li>
+        <li><strong>Salt (Namak):</strong> Limit to 5g (1 tsp) per day — the biggest modifiable BP risk factor</li>
+        <li><strong>Tea & Coffee:</strong> Up to 2–3 cups daily is fine; avoid adding too much sugar</li>
+      </ul>
+      <h2>❌ Avoid or Severely Limit</h2>
+      <ul>
+        <li>Vanaspati (dalda) and margarine — contain trans fats that are worst for the heart</li>
+        <li>Ultra-processed snacks (namkeen, chips, biscuits) — high in salt, refined oil, sugar</li>
+        <li>Sugary drinks (cold drinks, packaged juices) — spike blood sugar and triglycerides</li>
+        <li>Organ meats (liver, kidney) more than once a week — very high in cholesterol</li>
+      </ul>
+      <h2>Sample Heart-Healthy Day</h2>
+      <ul>
+        <li>🌅 <strong>Morning:</strong> Warm water with amla juice + soaked almonds (5–7)</li>
+        <li>🍳 <strong>Breakfast:</strong> Oats upma with vegetables OR daliya khichdi OR multigrain roti with sabzi</li>
+        <li>🥗 <strong>Lunch:</strong> 2 rotis (wheat/bajra) + 1 bowl dal + sabzi + salad + curd</li>
+        <li>🍎 <strong>Evening:</strong> Fruit (guava, apple, papaya) + green tea</li>
+        <li>🍽️ <strong>Dinner:</strong> Same as lunch but lighter — or khichdi + vegetable soup</li>
+      </ul>
+      <div class="success"><p>✅ Get a personalised diet plan from a Jivan doctor. <a href="call.html" class="underline" style="color:#15803d;">Book consultation →</a></p></div>
+    `
+  },
+  hydration: {
+    tag: 'Diet & Nutrition', color: '#06b6d4', time: '4 min read',
+    title: 'Hydration: How Much Water Do You Really Need?',
+    body: `
+      <div class="highlight"><p>💧 Up to <strong>75% of Indians are chronically mildly dehydrated</strong> without knowing it. Even mild dehydration (1–2% body weight loss) causes headache, fatigue, and reduced concentration.</p></div>
+      <h2>The Science of Daily Water Needs</h2>
+      <p>There is no universal "8 glasses a day" rule — water needs depend on your body weight, activity level, climate, and health status. The standard recommendation is:</p>
+      <ul>
+        <li><strong>Men:</strong> ~3.7 litres/day (from all sources including food)</li>
+        <li><strong>Women:</strong> ~2.7 litres/day</li>
+        <li><strong>Children (5–12 years):</strong> 1.5–2 litres/day</li>
+        <li><strong>During summer or exercise:</strong> Add 500–750 ml per hour of activity</li>
+        <li><strong>Pregnancy:</strong> Add 300 ml extra daily</li>
+        <li><strong>Breastfeeding:</strong> Add 700 ml extra daily</li>
+      </ul>
+      <h2>Signs You Are Dehydrated</h2>
+      <ul>
+        <li>🟡 Urine colour: Dark yellow = dehydrated; Pale straw = well hydrated; Clear = overhydrated</li>
+        <li>😴 Persistent fatigue and difficulty concentrating</li>
+        <li>🤕 Frequent headaches, especially in the afternoon</li>
+        <li>🫧 Dry mouth, chapped lips</li>
+        <li>😖 Constipation and dark stools</li>
+        <li>💗 Increased heart rate with minimal exertion</li>
+      </ul>
+      <h2>Best Sources of Hydration (India-specific)</h2>
+      <ul>
+        <li>🫙 Plain water — always the best choice</li>
+        <li>🥛 Buttermilk (Chaas) — hydrates AND provides probiotics and electrolytes</li>
+        <li>🌿 Coconut water — natural electrolytes (potassium, sodium); excellent post-exercise</li>
+        <li>🍋 Nimbu pani without sugar — Vitamin C + hydration</li>
+        <li>🫖 Green tea (unsweetened) — counts as fluid, plus antioxidants</li>
+        <li>🍉 Water-rich fruits: Watermelon (92% water), cucumber (96%), oranges, tomatoes</li>
+      </ul>
+      <div class="warn"><p>⚠️ <strong>Avoid:</strong> Caffeinated drinks (tea, coffee, cola) as your primary hydration — they have a mild diuretic effect. Also avoid sugary drinks — the sugar slows water absorption.</p></div>
+      <h2>Practical Tips to Drink More Water</h2>
+      <ul>
+        <li>Keep a 1-litre bottle on your desk — finish it twice before leaving work</li>
+        <li>Drink a full glass of water immediately after waking up</li>
+        <li>Set phone reminders every 2 hours if you forget to drink</li>
+        <li>Eat soup or dal before meals — counts as fluid and reduces overeating</li>
+        <li>If you dislike plain water, add a slice of lemon, mint, or cucumber</li>
+      </ul>
+    `
+  },
+  /* ── MENTAL HEALTH ───────────────────────────────────────────────────── */
+  stress: {
+    tag: 'Mental Health', color: '#7c3aed', time: '6 min read',
+    title: 'Managing Stress in Modern Life — Practical Techniques',
+    body: `
+      <div class="highlight"><p>🧘 Over <strong>89% of Indian workers</strong> report work-related stress (ASSOCHAM study). Chronic stress increases risk of heart disease, diabetes, anxiety disorders, and significantly reduces life quality.</p></div>
+      <h2>Understanding Your Stress Response</h2>
+      <p>When you experience stress, your body releases cortisol and adrenaline — triggering the "fight or flight" response. While useful in short bursts, chronic activation damages the heart, suppresses immunity, and impairs memory. The goal is to activate the opposite: your "rest and digest" (parasympathetic) system.</p>
+      <h2>Technique 1: Box Breathing (4-4-4-4)</h2>
+      <p>Used by Navy SEALs and surgeons before high-pressure situations. Do this for 5 minutes when you feel overwhelmed:</p>
+      <div class="flex flex-col gap-2 my-3">
+        <div class="flex items-center gap-3"><div class="step-num">1</div><p style="margin:0;font-size:.875rem;color:#475569;">Inhale through your nose for <strong>4 counts</strong></p></div>
+        <div class="flex items-center gap-3"><div class="step-num">2</div><p style="margin:0;font-size:.875rem;color:#475569;">Hold your breath for <strong>4 counts</strong></p></div>
+        <div class="flex items-center gap-3"><div class="step-num">3</div><p style="margin:0;font-size:.875rem;color:#475569;">Exhale through your mouth for <strong>4 counts</strong></p></div>
+        <div class="flex items-center gap-3"><div class="step-num">4</div><p style="margin:0;font-size:.875rem;color:#475569;">Hold empty for <strong>4 counts</strong>. Repeat 4–6 times.</p></div>
+      </div>
+      <h2>Technique 2: Progressive Muscle Relaxation</h2>
+      <p>Tensing and releasing muscle groups systematically reduces physical tension stored in the body. Start from your feet, work up to your face — 2 seconds tension, 10 seconds release per group. Takes 15 minutes and dramatically improves sleep quality.</p>
+      <h2>Technique 3: Journaling (5 Minutes Daily)</h2>
+      <ul>
+        <li>Write 3 things you are grateful for — shifts brain from threat-focus to appreciation</li>
+        <li>Dump worries on paper before bed — prevents rumination during sleep</li>
+        <li>Write one thing you will do differently tomorrow — builds sense of control</li>
+      </ul>
+      <h2>Technique 4: Social Connection</h2>
+      <p>The #1 predictor of happiness and stress resilience is the quality of personal relationships — not wealth, not achievement. Schedule regular in-person time with people who energise you. Even a 10-minute phone call with a close friend lowers cortisol measurably.</p>
+      <h2>Technique 5: Digital Detox Rules</h2>
+      <ul>
+        <li>No phone for the first 30 minutes after waking — set the day's intention first</li>
+        <li>No screens 60 minutes before bed — blue light disrupts melatonin</li>
+        <li>Turn off all non-essential notifications</li>
+        <li>Designate 2–3 specific times to check email/WhatsApp rather than constantly</li>
+      </ul>
+      <div class="warn"><p>⚠️ If stress is causing persistent anxiety, depression, sleep problems, or physical symptoms for more than 2 weeks, please consult a mental health professional. You can book with a Jivan doctor who can provide a referral.</p></div>
+      <div class="success"><p>✅ <a href="call.html" class="underline" style="color:#15803d;">Book a mental health consultation →</a></p></div>
+    `
+  },
+  sleep: {
+    tag: 'Mental Health', color: '#4f46e5', time: '5 min read',
+    title: 'Sleep Hygiene: 8 Science-Backed Rules for Better Sleep',
+    body: `
+      <div class="highlight"><p>😴 Over <strong>40% of Indians</strong> sleep less than 6 hours a night. Chronic poor sleep increases risk of obesity by 55%, diabetes by 48%, heart disease by 16%, and significantly impairs immune function.</p></div>
+      <h2>Why Sleep Is Non-Negotiable</h2>
+      <p>Sleep is when your brain flushes out toxins (including amyloid plaques linked to Alzheimer's), consolidates memory, repairs tissue, and regulates hormones. Sleeping 7–9 hours is not laziness — it is essential maintenance.</p>
+      <h2>The 8 Sleep Hygiene Rules</h2>
+      <div class="flex flex-col gap-3 my-3">
+        <div class="flex items-start gap-3"><div class="step-num">1</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Fix your wake time first:</strong> Set the same wake-up time every day including weekends — your body clock responds to consistent wake times more than bedtime</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">2</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>No screens 60 minutes before bed:</strong> Blue light from phones/TV suppresses melatonin (the sleep hormone) by up to 3 hours</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">3</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Make your room a cave:</strong> Cool (18–20°C), completely dark, and quiet. Use blackout curtains or an eye mask. Ear plugs if needed.</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">4</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>No caffeine after 2 PM:</strong> Caffeine's half-life is 6 hours — a 3 PM coffee still has half its effect at 9 PM</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">5</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Bed is only for sleep:</strong> Do not work, watch TV, or scroll in bed — train your brain that bed = sleep</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">6</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Wind-down routine:</strong> 30-minute pre-sleep ritual: dim lights, warm shower, light reading (paper book), or gentle stretching</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">7</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Exercise — but not too late:</strong> Regular exercise improves sleep quality by 65%; but avoid intense exercise within 3 hours of bedtime</p></div></div>
+        <div class="flex items-start gap-3"><div class="step-num">8</div><div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Don't lie awake in bed:</strong> If you can't sleep after 20 minutes, get up and do something calming in dim light until sleepy — lying awake trains anxiety around sleep</p></div></div>
+      </div>
+      <div class="warn"><p>⚠️ If you snore loudly, gasp during sleep, or feel exhausted despite adequate hours, you may have <strong>Sleep Apnoea</strong>. This is a medical condition — consult a doctor. Untreated sleep apnoea doubles cardiovascular risk.</p></div>
+    `
+  },
+  /* ── EMERGENCY FIRST AID ─────────────────────────────────────────────── */
+  firstaid: {
+    tag: 'Emergency First Aid', color: '#ef4444', time: '8 min read',
+    title: 'Basic First Aid: What to Do Before Help Arrives',
+    body: `
+      <div class="warn"><p>🚨 This guide is for first aid knowledge only. In any medical emergency, call <strong>108</strong> immediately. First aid buys time — it does not replace emergency medical care.</p></div>
+      <h2>1. Heart Attack (Myocardial Infarction)</h2>
+      <p><strong>Symptoms:</strong> Chest pain/pressure spreading to arm/jaw, shortness of breath, cold sweat, nausea, feeling of doom.</p>
+      <ul>
+        <li>Call 108 immediately — do not drive the person yourself if avoidable</li>
+        <li>Have the person sit or lie in the position most comfortable (often semi-reclined)</li>
+        <li>If they are not allergic and conscious: give <strong>Aspirin 325mg</strong> — chew it, don't swallow whole</li>
+        <li>Loosen tight clothing; keep them calm and still</li>
+        <li>If they become unresponsive and stop breathing normally → start CPR</li>
+      </ul>
+      <h2>2. CPR (Cardiopulmonary Resuscitation)</h2>
+      <p><strong>When:</strong> Person is unresponsive, not breathing normally (no breath or only gasping).</p>
+      <div class="flex flex-col gap-2 my-3">
+        <div class="flex items-start gap-3"><div class="step-num">1</div><p style="margin:0;font-size:.875rem;color:#475569;">Lay them on a firm flat surface. Call 108.</p></div>
+        <div class="flex items-start gap-3"><div class="step-num">2</div><p style="margin:0;font-size:.875rem;color:#475569;">Place heel of hand on centre of chest (lower half of breastbone). Other hand on top, fingers interlaced.</p></div>
+        <div class="flex items-start gap-3"><div class="step-num">3</div><p style="margin:0;font-size:.875rem;color:#475569;"><strong>Push hard and fast:</strong> At least 5–6 cm deep, 100–120 compressions per minute (tempo of "Stayin' Alive" by Bee Gees)</p></div>
+        <div class="flex items-start gap-3"><div class="step-num">4</div><p style="margin:0;font-size:.875rem;color:#475569;">Allow full chest recoil between compressions. Do not lean on the chest.</p></div>
+        <div class="flex items-start gap-3"><div class="step-num">5</div><p style="margin:0;font-size:.875rem;color:#475569;">Continue until emergency services arrive or an AED is available.</p></div>
+      </div>
+      <h2>3. Choking (Adult or Child over 1 year)</h2>
+      <ul>
+        <li>If coughing forcefully → encourage to keep coughing; do not interfere</li>
+        <li>If unable to cough, speak, or breathe → stand behind them, give 5 firm back blows between shoulder blades with heel of hand</li>
+        <li>If back blows fail → <strong>Heimlich manoeuvre</strong>: Stand behind, arms around their waist, one fist just above navel, other hand over fist — sharp upward thrusts. Repeat up to 5 times.</li>
+        <li>Alternate 5 back blows and 5 abdominal thrusts until object is dislodged or help arrives</li>
+      </ul>
+      <h2>4. Burns</h2>
+      <ul>
+        <li><strong>Cool the burn:</strong> Cool (not cold) running water for minimum <strong>20 minutes</strong> — this is the single most important step</li>
+        <li>Remove jewellery/clothing near the burn unless stuck to skin</li>
+        <li>Cover loosely with clean cling film or non-fluffy material</li>
+        <li><strong>Do NOT:</strong> Apply ice, butter, toothpaste, or any cream — all make burns worse</li>
+        <li>Go to hospital for burns larger than a palm, burns on face/hands/genitals, or any burn that is charred/white/dry</li>
+      </ul>
+      <h2>5. Fractures</h2>
+      <ul>
+        <li><strong>Immobilise:</strong> Support the injury in the position found — do not try to straighten</li>
+        <li>Splint if moving the person — use whatever is available (rolled newspaper, stick) padding around it</li>
+        <li>Elevate the limb if possible to reduce swelling</li>
+        <li>Apply ice pack wrapped in cloth (not directly on skin)</li>
+        <li>Call 108 for suspected spinal injuries — do NOT move the person</li>
+      </ul>
+      <div class="success"><p>✅ Consider taking a certified first aid course. The Indian Red Cross Society offers courses across India — visit <a href="https://www.indianredcross.org" target="_blank" rel="noopener" class="underline" style="color:#15803d;">indianredcross.org</a></p></div>
+    `
+  },
+  /* ── HEALTH NEWS ─────────────────────────────────────────────────────── */
+  abdm_news: {
+    tag: 'Health News', color: '#0ea5e9', time: '2 min read',
+    title: 'ABDM Digital Health Cards: 50 Crore Indians Now Enrolled',
+    body: `
+      <div class="highlight"><p>📱 The Ayushman Bharat Digital Mission has crossed <strong>50 crore Ayushman Bharat Health Account (ABHA)</strong> registrations — a landmark in India's digital health journey.</p></div>
+      <h2>What is ABHA?</h2>
+      <p>The Ayushman Bharat Health Account (ABHA) is a 14-digit unique health ID for every Indian citizen. It allows all your health records — prescriptions, lab reports, discharge summaries — to be stored digitally and shared securely with any doctor or hospital with your consent.</p>
+      <h2>Key Benefits of Having an ABHA</h2>
+      <ul>
+        <li>📋 All health records in one place — no more carrying paper files to hospitals</li>
+        <li>🏥 Seamless sharing with any empanelled hospital across India</li>
+        <li>🔐 You control who can see your records — consent-based access</li>
+        <li>💊 Doctors can see your complete medication history — prevents dangerous drug interactions</li>
+        <li>📊 Enables better continuity of care when you change cities or doctors</li>
+      </ul>
+      <h2>How to Get Your ABHA ID</h2>
+      <div class="flex flex-col gap-2 my-3">
+        <div class="flex items-start gap-3"><div class="step-num">1</div><p style="margin:0;font-size:.875rem;color:#475569;">Visit <a href="https://healthid.ndhm.gov.in" target="_blank" rel="noopener" class="text-primary underline">healthid.ndhm.gov.in</a> or download the <strong>ABHA app</strong></p></div>
+        <div class="flex items-start gap-3"><div class="step-num">2</div><p style="margin:0;font-size:.875rem;color:#475569;">Register using Aadhaar or driving licence — takes under 2 minutes</p></div>
+        <div class="flex items-start gap-3"><div class="step-num">3</div><p style="margin:0;font-size:.875rem;color:#475569;">Download your ABHA card and share the QR code at hospitals</p></div>
+      </div>
+      <div class="success"><p>✅ Registration is <strong>free</strong> and takes less than 2 minutes. It's the foundation of India's digital health system.</p></div>
+    `
+  }
+};
+
+/* ── Articles list ─────────────────────────────────────────── */
+const articles = [
+  { id:'pmjay',       cat:'scheme',    icon:'assured_workload',  color:'text-secondary', bg:'bg-secondary/10', title:'Ayushman Bharat — PM-JAY Complete Guide',        desc:'How to avail cashless treatment up to ₹5 Lakhs at 25,000+ empanelled hospitals. Eligibility, how to use, and important contacts.', tag:'Govt. Scheme',       time:'5 min read' },
+  { id:'pmjay_vs_state',cat:'scheme',  icon:'medical_services',  color:'text-teal-600',  bg:'bg-teal-50 dark:bg-teal-900/20', title:'PM-JAY vs State Health Schemes: Know Your Rights', desc:'Compare central and state government health insurance schemes to maximise your family\'s healthcare coverage.', tag:'Govt. Scheme', time:'6 min read' },
+  { id:'hygiene',     cat:'hygiene',   icon:'clean_hands',        color:'text-primary',   bg:'bg-primary/10',   title:'Hand Hygiene: WHO 7-Step Method That Saves Lives', desc:'Step-by-step handwashing technique that prevents 80% of common infections — with the exact technique used by hospitals.', tag:'Hygiene',            time:'3 min read' },
+  { id:'monsoon',     cat:'hygiene',   icon:'masks',              color:'text-blue-600',  bg:'bg-blue-50 dark:bg-blue-900/20', title:'Monsoon Disease Prevention: Complete Guide',       desc:'Protect your family from dengue, malaria, leptospirosis, typhoid, and fungal infections this monsoon.', tag:'Prevention',         time:'4 min read' },
+  { id:'diet_heart',  cat:'diet',      icon:'nutrition',          color:'text-green-600', bg:'bg-green-50 dark:bg-green-900/20', title:'Balanced Indian Diet for a Healthy Heart',          desc:'Expert-recommended Indian meals using traditional ingredients to reduce cardiovascular disease risk by up to 35%.', tag:'Diet & Nutrition',   time:'7 min read' },
+  { id:'hydration',   cat:'diet',      icon:'water_drop',         color:'text-cyan-600',  bg:'bg-cyan-50 dark:bg-cyan-900/20', title:'Hydration: How Much Water Do You Actually Need?',   desc:'The science of daily water intake, signs of dehydration, and which Indian drinks hydrate best.', tag:'Diet & Nutrition',   time:'4 min read' },
+  { id:'stress',      cat:'mental',    icon:'self_improvement',   color:'text-purple-600',bg:'bg-purple-50 dark:bg-purple-900/20', title:'Managing Stress: 5 Proven Techniques',              desc:'Box breathing, journaling, digital detox, and other evidence-based techniques used by professionals to manage modern stress.', tag:'Mental Health',      time:'6 min read' },
+  { id:'sleep',       cat:'mental',    icon:'bedtime',            color:'text-indigo-600',bg:'bg-indigo-50 dark:bg-indigo-900/20', title:'Sleep Hygiene: 8 Rules for Better Sleep Tonight',   desc:'Science-backed strategies to improve sleep quality, beat insomnia, and wake up genuinely refreshed.', tag:'Mental Health',      time:'5 min read' },
+  { id:'firstaid',    cat:'emergency', icon:'emergency',          color:'text-red-600',   bg:'bg-red-50 dark:bg-red-900/20', title:'Basic First Aid: What to Do Before Help Arrives',   desc:'Critical steps for heart attack, CPR, choking, burns, and fractures — knowledge that can save a life in the crucial first minutes.', tag:'Emergency First Aid', time:'8 min read' },
+  { id:'abdm_news',   cat:'news',      icon:'smartphone',         color:'text-primary',   bg:'bg-primary/10',   title:'ABDM: 50 Crore Indians Have Digital Health Cards',   desc:'How to get your free Ayushman Bharat Health Account (ABHA) ID and what you can do with it.', tag:'Health News',        time:'2 min read' },
+];
+
+/* ── Render ────────────────────────────────────────────────── */
+function renderArticles(list) {
+  const grid = document.getElementById('articles-grid');
+  if (!list.length) {
+    grid.innerHTML = '<p class="col-span-3 text-center text-slate-400 py-10">No articles found.</p>';
+    return;
+  }
+  grid.innerHTML = list.map(a => `
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all cursor-pointer group" onclick="openArticle('${a.id}')">
+      <div class="p-6">
+        <div class="w-12 h-12 ${a.bg} ${a.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <span class="material-symbols-outlined text-2xl">${a.icon}</span>
+        </div>
+        <div class="flex items-center gap-2 mb-2 flex-wrap">
+          <span class="text-xs font-bold px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-full">${a.tag}</span>
+          <span class="text-xs text-slate-400">${a.time}</span>
+        </div>
+        <h3 class="font-bold text-slate-900 dark:text-white mb-2 leading-snug group-hover:text-primary transition-colors">${a.title}</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">${a.desc}</p>
+        <div class="mt-4 flex items-center gap-1 text-primary font-bold text-sm group-hover:translate-x-1 transition-transform">
+          Read Full Article <span class="material-symbols-outlined text-base">arrow_forward</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterCat(cat, btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => {
+    b.className = 'cat-btn px-4 py-2 rounded-full text-sm font-bold bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white border border-transparent transition-all';
+  });
+  btn.className = 'cat-btn active px-4 py-2 rounded-full text-sm font-bold border border-primary/30 transition-all';
+  renderArticles(cat === 'all' ? articles : articles.filter(a => a.cat === cat));
+}
+
+function searchArticles(q) {
+  const lq = q.toLowerCase();
+  renderArticles(articles.filter(a =>
+    a.title.toLowerCase().includes(lq) ||
+    a.desc.toLowerCase().includes(lq) ||
+    a.tag.toLowerCase().includes(lq)
+  ));
+}
+
+/* ── Modal ─────────────────────────────────────────────────── */
+function openArticle(id) {
+  const data = CONTENT[id];
+  if (!data) { showToast('Article not found.', 'error'); return; }
+
+  document.getElementById('modal-tag').textContent   = data.tag;
+  document.getElementById('modal-title').textContent = data.title;
+  document.getElementById('modal-meta').textContent  = data.time + ' · Jivan Health Library';
+  document.getElementById('modal-header').style.background = data.color || '#0ea5e9';
+  document.getElementById('modal-body').innerHTML    = data.body;
+
+  const modal = document.getElementById('article-modal');
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('article-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function subscribeNewsletter() {
+  const email = document.getElementById('newsletter-email').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('Enter a valid email address', 'error'); return; }
+  fetch('http://localhost:3000/api/subscribe', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email})
+  }).then(r=>r.json()).then(d => {
+    if (d.ok) { showToast('Subscribed! Weekly health tips coming your way 📧', 'success'); document.getElementById('newsletter-email').value = ''; }
+    else showToast(d.msg || 'Could not subscribe.', 'error');
+  }).catch(() => showToast('Server not reachable.', 'error'));
+}
+
+renderArticles(articles);
+</script>
+
+<script src="chatbot-voice.js"></script>
+<script src="nav-auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-Content-Type-Options" content="nosniff"/>
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN"/>
+<meta name="referrer" content="strict-origin-when-cross-origin"/>
+<script>
+(function(){var s=localStorage.getItem('jivan-dark');var p=window.matchMedia('(prefers-color-scheme:dark)').matches;if(s!==null?s==='true':p)document.documentElement.classList.add('dark');})();
+</script>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ambulance Alert — Jivan TeleHealth</title>
+<meta name="description" content="Request emergency ambulance instantly with real-time tracking."/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚑</text></svg>"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="jivan-backend.js"></script>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#0ea5e9","secondary":"#14b8a6","accent-red":"#ef4444","emergency":"#dc2626","medical-blue":"#0ea5e9","medical-green":"#10b981","background-light":"#f8fafc","background-dark":"#0f172a"},fontFamily:{"display":["Public Sans","sans-serif"]}}}}</script>
+<style>
+  body{font-family:'Public Sans',sans-serif;}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}
+  #mobile-drawer{transition:transform 0.3s ease;}
+  .no-scrollbar::-webkit-scrollbar{display:none;}
+  .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none;}
+  @keyframes pulse-ring{0%{transform:scale(1);opacity:1}100%{transform:scale(1.6);opacity:0}}
+  .pulse-ring{animation:pulse-ring 1.5s ease-out infinite;}
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+
+<div id="menu-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" onclick="MobileMenu.close()"></div>
+<div id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 bg-white dark:bg-slate-900 z-50 shadow-2xl -translate-x-full flex flex-col">
+  <div class="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800">
+    <span class="font-extrabold text-emergency">🚑 Emergency</span>
+    <button onclick="MobileMenu.close()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span class="material-symbols-outlined">close</span></button>
+  </div>
+  <nav class="flex flex-col gap-1 p-4">
+    <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold text-sm">🏠 Home</a>
+    <a href="health.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold text-sm">📋 Health Records</a>
+    <a href="blood.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold text-sm">🩸 Blood Donor</a>
+    <a href="call.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold text-sm">📹 Consultation</a>
+  </nav>
+</div>
+
+<!-- Header -->
+<header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-4 lg:px-10 py-4 bg-white dark:bg-slate-900 sticky top-0 z-30">
+  <a href="index.html" class="flex items-center gap-3">
+    <span class="material-symbols-outlined text-3xl text-emergency">emergency_share</span>
+    <span class="text-xl font-bold text-slate-900 dark:text-white">Jivan TeleHealth</span>
+  </a>
+  <div class="flex items-center gap-2">
+    <button onclick="DarkMode.toggle()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-colors">
+      <span class="material-symbols-outlined text-xl" data-dark-icon>dark_mode</span>
+    </button>
+    <a href="tel:108" class="flex items-center gap-2 px-4 py-2 bg-emergency text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-colors">
+      <span class="material-symbols-outlined text-xl">call</span> 108
+    </a>
+    <button onclick="MobileMenu.open()" class="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </div>
+</header>
+
+<main class="flex-1 flex flex-col lg:flex-row gap-6 p-4 lg:p-8 max-w-7xl mx-auto w-full">
+
+  <!-- Sidebar -->
+  <aside class="w-full lg:w-72 flex flex-col gap-5 shrink-0">
+    <div class="bg-white dark:bg-slate-900 rounded-xl p-5 shadow-sm border border-slate-200 dark:border-slate-800">
+      <h3 class="text-base font-bold mb-3">Quick Links</h3>
+      <nav class="flex flex-col gap-1.5">
+        <a href="index.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-primary/5 text-slate-700 dark:text-slate-300 transition-colors text-sm font-medium">
+          <span class="material-symbols-outlined text-primary text-lg">home</span> Dashboard
+        </a>
+        <a href="emg.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emergency/10 text-emergency border border-emergency/20 text-sm font-bold">
+          <span class="material-symbols-outlined text-lg">ambulance</span> Ambulance Alert
+        </a>
+        <a href="call.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-primary/5 text-slate-700 dark:text-slate-300 transition-colors text-sm font-medium">
+          <span class="material-symbols-outlined text-medical-blue text-lg">calendar_today</span> Appointments
+        </a>
+        <a href="health.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-primary/5 text-slate-700 dark:text-slate-300 transition-colors text-sm font-medium">
+          <span class="material-symbols-outlined text-medical-green text-lg">description</span> Health Records
+        </a>
+      </nav>
+    </div>
+
+    <!-- Emergency Contacts -->
+    <div class="bg-emergency/5 border border-emergency/20 rounded-xl p-5">
+      <h3 class="text-emergency text-base font-bold mb-3 flex items-center gap-2">
+        <span class="material-symbols-outlined text-lg">contact_phone</span> Emergency Contacts
+      </h3>
+      <div class="flex flex-col gap-2">
+        <a href="tel:108" class="w-full flex items-center justify-between p-3 bg-white dark:bg-slate-900 rounded-lg hover:shadow-md transition-shadow">
+          <div><p class="text-xs text-slate-500 uppercase font-bold">Hospital Hotline</p><p class="font-bold text-sm">108 / 102</p></div>
+          <span class="material-symbols-outlined text-emergency">call</span>
+        </a>
+        <button id="physician-call-btn" onclick="callPhysician()" class="w-full flex items-center justify-between p-3 bg-white dark:bg-slate-900 rounded-lg hover:shadow-md transition-shadow text-left">
+          <div><p class="text-xs text-slate-500 uppercase font-bold">Primary Physician</p><p id="physician-name" class="font-bold text-sm">Loading...</p></div>
+          <span class="material-symbols-outlined text-medical-blue">call</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Past Requests -->
+    <div class="bg-white dark:bg-slate-900 rounded-xl p-5 shadow-sm border border-slate-200 dark:border-slate-800">
+      <h3 class="text-base font-bold mb-3">Past Requests</h3>
+      <div id="past-requests" class="flex flex-col gap-2 text-sm text-slate-500">
+        <p class="text-xs italic">No past requests</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Area -->
+  <div class="flex-1 flex flex-col gap-5">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
+      <div>
+        <nav class="flex items-center gap-2 text-sm text-slate-500 mb-1">
+          <span>Services</span><span class="material-symbols-outlined text-xs">chevron_right</span>
+          <span class="text-emergency font-medium">Ambulance Alert</span>
+        </nav>
+        <h1 class="text-3xl font-black tracking-tight">Emergency Response</h1>
+        <p class="text-slate-500 dark:text-slate-400 text-sm">Locating nearest medical assistance for your current position.</p>
+      </div>
+      <div id="units-status" class="flex items-center gap-2 bg-medical-green/10 text-medical-green px-4 py-2 rounded-full text-sm font-bold w-fit">
+        <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-medical-green opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-medical-green"></span></span>
+        Online: 12 Active Units Nearby
+      </div>
+    </div>
+
+    <!-- Action + ETA -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div class="md:col-span-2 bg-emergency rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-xl shadow-emergency/20">
+        <div class="text-white text-center sm:text-left">
+          <h2 class="text-xl font-black mb-1 uppercase tracking-wide">Emergency Needed?</h2>
+          <p class="text-white/80 text-sm">Dispatch a medical unit to your location instantly.</p>
+          <p id="user-location-display" class="text-white/60 text-xs mt-1 flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">location_on</span> Getting your location...
+          </p>
+        </div>
+        <div class="flex flex-col gap-3 w-full sm:w-auto">
+          <button id="request-btn" onclick="requestAmbulance()"
+            class="flex items-center justify-center gap-3 bg-white text-emergency px-6 py-4 rounded-full font-black text-base hover:scale-105 active:scale-95 transition-all shadow-lg">
+            <span class="material-symbols-outlined text-2xl">emergency</span> REQUEST AMBULANCE
+          </button>
+          <a href="tel:108" class="flex items-center justify-center gap-3 bg-white/20 text-white border-2 border-white px-6 py-3 rounded-full font-bold text-sm hover:bg-white hover:text-emergency transition-all">
+            <span class="material-symbols-outlined">call</span> EMERGENCY CALL — 108
+          </a>
+        </div>
+      </div>
+
+      <!-- ETA Card -->
+      <div id="eta-card" class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-center items-center text-center shadow-sm">
+        <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">Estimated Arrival</p>
+        <div id="eta-display" class="text-4xl font-black text-medical-blue">--:--</div>
+        <p class="text-slate-400 text-xs mt-1 font-medium">MINUTES FROM NOW</p>
+        <div class="w-full mt-4">
+          <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden mb-3">
+            <div id="eta-progress" class="bg-medical-blue h-full rounded-full transition-all duration-1000 w-0"></div>
+          </div>
+          <div class="flex justify-between items-center px-1 text-[10px] font-bold">
+            <span id="stage-dispatched" class="text-slate-400">Dispatched</span>
+            <span id="stage-onway" class="text-slate-400">On Way</span>
+            <span id="stage-reached" class="text-slate-400">Reached</span>
+          </div>
+        </div>
+        <p id="unit-id-display" class="text-xs text-slate-400 mt-3 font-mono"></p>
+      </div>
+    </div>
+
+    <!-- Map -->
+    <div class="relative bg-slate-200 dark:bg-slate-800 rounded-2xl h-[400px] w-full overflow-hidden border border-slate-300 dark:border-slate-700 shadow-inner group">
+      <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+        style="background-image:url('https://lh3.googleusercontent.com/aida-public/AB6AXuCPaotLjLWRkBY4agOptUfmkNWI9zJL6V7GOCpBJf_QXNHtMX1kD3g2ZAQ7NC5KRw1cgFEEB-Ds49JJLSfNJKGVL8tnBfwyCUKRd9ho6C0zCg1fEg3dpWPMVSeMVW-N3OYolkVsUilAqRZETzWq6JR8QIHBX3MiQ-IDQiWyp27GDRPd5RYrGiIPK_XpdhPy37g9t-BLFjqBqsYGtKwHFuda-mUsloqtadrDjR9WdOCKAa5XjPxM39QEMw0UY2slhO3BjP2EXhGQUz1v')">
+      </div>
+      <!-- Search -->
+      <div class="absolute top-4 left-4 right-16 pointer-events-auto">
+        <div class="relative"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+          <input class="w-full pl-10 pr-4 py-2.5 rounded-xl border-none bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-lg text-sm focus:ring-2 focus:ring-emergency outline-none" placeholder="Search nearest hospital..."/>
+        </div>
+      </div>
+      <!-- Location pin -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+        <div class="relative flex items-center justify-center">
+          <div class="pulse-ring absolute w-12 h-12 rounded-full bg-emergency/30"></div>
+          <div class="w-6 h-6 rounded-full bg-emergency border-2 border-white shadow-lg z-10"></div>
+        </div>
+      </div>
+      <!-- Units -->
+      <div class="absolute bottom-4 left-4 right-4 flex gap-3 overflow-x-auto pb-1 no-scrollbar">
+        <div class="flex-shrink-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur px-4 py-3 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 min-w-[180px]">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-medical-blue/20 flex items-center justify-center text-medical-blue font-bold text-sm">A1</div>
+            <div><p class="text-xs font-bold text-slate-500 uppercase">Unit AMB-204</p><p class="text-sm font-bold">1.2 km away</p></div>
+          </div>
+        </div>
+        <div class="flex-shrink-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur px-4 py-3 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 min-w-[180px]">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-medical-green/20 flex items-center justify-center text-medical-green font-bold text-sm">H1</div>
+            <div><p class="text-xs font-bold text-slate-500 uppercase">City General Hospital</p><p class="text-sm font-bold">Available: 4 Beds</p></div>
+          </div>
+        </div>
+        <div class="flex-shrink-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur px-4 py-3 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 min-w-[180px]">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-emergency/20 flex items-center justify-center text-emergency font-bold text-sm">A2</div>
+            <div><p class="text-xs font-bold text-slate-500 uppercase">Unit AMB-312</p><p class="text-sm font-bold">2.8 km away</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-start gap-3">
+        <span class="material-symbols-outlined text-medical-blue p-2 bg-medical-blue/10 rounded-lg text-xl">speed</span>
+        <div><h4 class="font-bold text-sm">Rapid Dispatch</h4><p class="text-xs text-slate-500 mt-0.5">Automated signal to nearest 3 units.</p></div>
+      </div>
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-start gap-3">
+        <span class="material-symbols-outlined text-medical-green p-2 bg-medical-green/10 rounded-lg text-xl">health_and_safety</span>
+        <div><h4 class="font-bold text-sm">ICU On Wheels</h4><p class="text-xs text-slate-500 mt-0.5">Grade-A life support equipped.</p></div>
+      </div>
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-start gap-3">
+        <span class="material-symbols-outlined text-emergency p-2 bg-emergency/10 rounded-lg text-xl">history_edu</span>
+        <div><h4 class="font-bold text-sm">Live Data Link</h4><p class="text-xs text-slate-500 mt-0.5">Records shared with ER before arrival.</p></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="mt-8 border-t border-slate-200 dark:border-slate-800 py-6 bg-white dark:bg-slate-950 px-4 lg:px-10">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
+    <span class="font-bold">Jivan TeleHealth</span>
+    <div class="flex gap-6"><a href="#" class="hover:text-primary">Privacy Policy</a><a href="#" class="hover:text-primary">Terms</a><a href="#" class="hover:text-primary">Medical Disclaimer</a></div>
+    <span>© <span data-year></span> Jivan TeleHealth Connect</span>
+  </div>
+</footer>
+
+<div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
+
+<script>
+let userLocation = 'Mumbai, India';
+let etaInterval = null;
+let etaSeconds = 0;
+let currentRequest = null;
+
+// Get GPS location
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(pos => {
+    const { latitude, longitude } = pos.coords;
+    userLocation = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+    document.getElementById('user-location-display').innerHTML =
+      `<span class="material-symbols-outlined text-xs">location_on</span> GPS: ${userLocation}`;
+  }, () => {
+    document.getElementById('user-location-display').innerHTML =
+      `<span class="material-symbols-outlined text-xs">location_off</span> Mumbai, India (approximate)`;
+  });
+}
+
+// Load physician name from session
+window.addEventListener('DOMContentLoaded', () => {
+  const session = Auth.getSession();
+  document.getElementById('physician-name').textContent = session ? 'Dr. Vikram Sethi' : 'Login to see';
+  loadPastRequests();
+});
+
+function loadPastRequests() {
+  const all = Emergency.getAll();
+  const container = document.getElementById('past-requests');
+  if (!all.length) return;
+  container.innerHTML = all.slice(-3).reverse().map(r => `
+    <div class="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-xs">
+      <div class="font-bold text-emergency">${r.id} — ${r.unit}</div>
+      <div class="text-slate-500">${r.location}</div>
+      <div class="text-slate-400">${new Date(r.createdAt).toLocaleString()}</div>
+    </div>
+  `).join('');
+}
+
+function requestAmbulance() {
+  const btn = document.getElementById('request-btn');
+  setLoading(btn, true);
+
+  setTimeout(() => {
+    const result = Emergency.request(userLocation);
+    setLoading(btn, false);
+    currentRequest = result.request;
+
+    showToast(`🚑 Ambulance ${result.request.unit} dispatched! ETA: ${result.request.eta}`, 'success', 6000);
+
+    // Start ETA countdown
+    const etaMin = parseInt(result.request.eta);
+    etaSeconds = etaMin * 60;
+    startETACountdown(etaSeconds);
+
+    // Update unit display
+    document.getElementById('unit-id-display').textContent = `Unit: ${result.request.unit}`;
+    document.getElementById('stage-dispatched').className = 'text-medical-blue font-bold';
+
+    loadPastRequests();
+  }, 1500);
+}
+
+function startETACountdown(totalSeconds) {
+  if (etaInterval) clearInterval(etaInterval);
+  let remaining = totalSeconds;
+
+  etaInterval = setInterval(() => {
+    remaining--;
+    const mins = Math.floor(remaining / 60);
+    const secs = remaining % 60;
+    document.getElementById('eta-display').textContent =
+      String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+
+    const progress = ((totalSeconds - remaining) / totalSeconds) * 100;
+    document.getElementById('eta-progress').style.width = progress + '%';
+
+    // Update stages
+    if (progress > 30) document.getElementById('stage-onway').className = 'text-medical-blue font-bold';
+    if (progress > 80) document.getElementById('stage-reached').className = 'text-medical-green font-bold';
+
+    if (remaining <= 0) {
+      clearInterval(etaInterval);
+      document.getElementById('eta-display').textContent = 'ARRIVED';
+      document.getElementById('eta-display').className = 'text-2xl font-black text-medical-green';
+      showToast('🚑 Ambulance has arrived at your location!', 'success', 8000);
+    }
+  }, 1000);
+}
+
+function callPhysician() {
+  const session = Auth.getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
+  showToast('Calling Dr. Vikram Sethi...', 'info');
+}
+</script>
+
+<script src="chatbot-voice.js"></script>
+<script src="nav-auth.js"></script>
+</body>
+</html>

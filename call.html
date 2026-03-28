@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-Content-Type-Options" content="nosniff"/>
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN"/>
+<meta name="referrer" content="strict-origin-when-cross-origin"/>
+<script>
+(function(){var s=localStorage.getItem('jivan-dark');var p=window.matchMedia('(prefers-color-scheme:dark)').matches;if(s!==null?s==='true':p)document.documentElement.classList.add('dark');})();
+</script>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Online Consultation — Jivan TeleHealth</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📹</text></svg>"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="jivan-backend.js"></script>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#0891b2","secondary":"#0d9488","background-light":"#f8fafc","background-dark":"#0f172a"},fontFamily:{"display":["Public Sans","sans-serif"]}}}}</script>
+<style>body{font-family:'Public Sans',sans-serif;}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}#mobile-drawer{transition:transform 0.3s ease;}.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center;}.modal-bg.open{display:flex;}.slot-btn.selected{background:#0891b2;color:white;border-color:#0891b2;}</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div id="menu-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" onclick="MobileMenu.close()"></div>
+<div id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 bg-white dark:bg-slate-900 z-50 shadow-2xl -translate-x-full flex flex-col">
+  <div class="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800">
+    <span class="font-extrabold text-primary">Jivan TeleHealth</span>
+    <button onclick="MobileMenu.close()"><span class="material-symbols-outlined">close</span></button>
+  </div>
+  <nav class="flex flex-col gap-1 p-4">
+    <a href="index.html" class="px-4 py-3 rounded-xl hover:bg-primary/10 font-semibold text-sm">🏠 Home</a>
+    <a href="health.html" class="px-4 py-3 rounded-xl hover:bg-primary/10 font-semibold text-sm">📋 Health Records</a>
+    <a href="emg.html" class="px-4 py-3 rounded-xl hover:bg-red-50 text-red-500 font-semibold text-sm">🚨 Emergency</a>
+  </nav>
+</div>
+
+<!-- Header -->
+<header class="sticky top-0 z-30 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between gap-4">
+      <div class="flex items-center gap-6 flex-1">
+        <a href="index.html" class="flex items-center gap-2 text-primary">
+          <span class="material-symbols-outlined text-2xl">medical_services</span>
+          <span class="text-lg font-bold text-slate-900 dark:text-white hidden sm:block">Jivan TeleHealth</span>
+        </a>
+        <div class="hidden md:flex flex-1 max-w-sm">
+          <div class="relative w-full">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+            <input id="doctor-search" oninput="filterDoctors(this.value)" class="block w-full rounded-xl border-none bg-slate-100 dark:bg-slate-800 pl-9 py-2 text-sm focus:ring-2 focus:ring-primary outline-none" placeholder="Search doctors or specialties"/>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="DarkMode.toggle()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+          <span class="material-symbols-outlined text-[20px]" data-dark-icon>dark_mode</span>
+        </button>
+        <button id="nav-user-chip" style="display:none" class="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-xl text-sm font-bold">
+          <span class="material-symbols-outlined text-lg">account_circle</span><span id="nav-user-name"></span>
+        </button>
+        <a href="login.html" id="nav-login-btn" class="hidden sm:block px-4 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90">Login</a>
+        <button onclick="MobileMenu.open()" class="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600"><span class="material-symbols-outlined">menu</span></button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="flex-1">
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-primary/10 via-secondary/5 to-transparent py-10 px-4">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-5 leading-[1.1]">Instant Access to <span class="text-primary">Expert Healthcare</span> Anywhere.</h1>
+        <p class="text-slate-600 dark:text-slate-400 mb-6 max-w-lg text-lg">Secure video consultations with India's top specialists. Safe, private, and available 24/7.</p>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="scrollToDoctors()" class="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/30 transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined">videocam</span> Book Video Call
+          </button>
+          <button onclick="scrollToDoctors()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all">View Specialists</button>
+        </div>
+        <!-- My Appointments -->
+        <div id="my-appts-section" class="mt-6 hidden">
+          <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Your Upcoming Appointments</h3>
+          <div id="my-appts" class="space-y-2"></div>
+        </div>
+      </div>
+      <div class="relative hidden md:block">
+        <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-800 aspect-video">
+          <div class="absolute inset-0 bg-cover bg-center" style="background-image:url('https://lh3.googleusercontent.com/aida-public/AB6AXuAB9Wm0HjNB4PsHBFTKsHoJRo2huD2AC-ix5qwkyO23dgahbj9HNntgPTF4PSn_-FXlb8alDBAuWDq0LtogTo290c-1A4JF-Hc5aVdUwbiwRWFXH-vVaF_Ab9Qouo5m4WzxHldAmqU6QfcV9D6_oO9XsE_aMNvcccW2K9CfM-H8u_R5O-02Hnvm5OHiyyTvLBrnx7XAWESzPXyMN5z2qsbglkAdZLyPpn6W9ykaKkbxmsmzok399lHU0kLH8wmQcRqKyNTTBziXZYg5')"></div>
+          <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/20">
+            <button class="p-2 rounded-full bg-slate-700 text-white"><span class="material-symbols-outlined text-lg">mic</span></button>
+            <button onclick="showToast('Video call demo — login to use real calls','info')" class="p-2.5 rounded-full bg-red-500 text-white"><span class="material-symbols-outlined text-lg">call_end</span></button>
+            <button class="p-2 rounded-full bg-slate-700 text-white"><span class="material-symbols-outlined text-lg">videocam</span></button>
+          </div>
+          <div class="absolute top-3 right-3 flex items-center gap-1.5 bg-black/40 px-3 py-1 rounded-full text-white text-xs font-bold">
+            <span class="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></span> LIVE
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Doctors + Booking -->
+  <section id="doctors-section" class="py-10 px-4 max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8">
+      <h2 class="text-2xl font-bold">Find an Online Specialist</h2>
+      <select id="spec-filter" onchange="filterBySpec(this.value)" class="px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-primary">
+        <option value="">All Specialties</option>
+        <option>Cardiologist</option><option>Neurologist</option><option>Pediatrician</option><option>Dermatologist</option>
+      </select>
+    </div>
+    <div class="grid lg:grid-cols-3 gap-6">
+      <div id="doctor-list" class="lg:col-span-2 space-y-4"></div>
+      <!-- Booking Sidebar -->
+      <div class="space-y-5">
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <h4 class="font-bold mb-1 flex items-center gap-2 text-sm"><span class="material-symbols-outlined text-primary text-lg">event</span>Book a Slot</h4>
+          <p id="selected-doctor-name" class="text-xs text-slate-400 mb-4">Select a doctor first</p>
+          <div class="grid grid-cols-7 gap-1 text-center text-[10px] mb-3 font-bold text-slate-400">
+            <span>MO</span><span>TU</span><span>WE</span><span>TH</span><span>FR</span><span>SA</span><span>SU</span>
+          </div>
+          <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center text-sm mb-4"></div>
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Available Times</p>
+          <div class="grid grid-cols-2 gap-2 mb-4" id="time-slots">
+            <button class="slot-btn py-2 px-3 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold hover:border-primary transition-all" onclick="selectSlot(this,'09:00 AM')">09:00 AM</button>
+            <button class="slot-btn py-2 px-3 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold hover:border-primary transition-all" onclick="selectSlot(this,'11:30 AM')">11:30 AM</button>
+            <button class="slot-btn py-2 px-3 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold hover:border-primary transition-all" onclick="selectSlot(this,'02:00 PM')">02:00 PM</button>
+            <button class="slot-btn py-2 px-3 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold hover:border-primary transition-all" onclick="selectSlot(this,'04:30 PM')">04:30 PM</button>
+          </div>
+          <button id="confirm-btn" onclick="confirmBooking()" class="w-full bg-slate-900 dark:bg-white dark:text-slate-900 text-white py-3 rounded-xl font-bold text-sm hover:bg-slate-700 dark:hover:bg-slate-100 transition-all">
+            Confirm Appointment
+          </button>
+        </div>
+        <div class="bg-gradient-to-br from-primary to-secondary p-5 rounded-2xl text-white">
+          <h4 class="font-bold text-base mb-1">Need Help?</h4>
+          <p class="text-sm text-white/80 mb-3">Our concierges help you find the right doctor.</p>
+          <button onclick="JivanChat.open()" class="w-full bg-white/20 backdrop-blur-md border border-white/30 py-2 rounded-xl font-bold text-sm hover:bg-white/30 transition-all">Chat with us</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="py-14 px-4 bg-slate-100 dark:bg-slate-900/50">
+    <div class="max-w-7xl mx-auto text-center mb-10">
+      <h2 class="text-3xl font-black mb-3">Simple, Transparent Pricing</h2>
+      <p class="text-slate-500">Choose the plan that fits your needs.</p>
+    </div>
+    <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
+      <div class="bg-white dark:bg-slate-900 p-7 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col">
+        <h4 class="text-lg font-bold mb-1">One-Time</h4>
+        <p class="text-slate-500 text-sm mb-5">Quick health queries</p>
+        <div class="mb-5"><span class="text-3xl font-black">₹499</span><span class="text-slate-500 text-sm">/visit</span></div>
+        <ul class="space-y-3 mb-6 flex-1 text-sm">
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>20-min Video Consultation</li>
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>Digital Prescription</li>
+        </ul>
+        <button onclick="showToast('Select a doctor and slot above to book!','info')" class="w-full py-2.5 border-2 border-primary text-primary font-bold rounded-xl hover:bg-primary/5 transition-all text-sm">Get Started</button>
+      </div>
+      <div class="bg-white dark:bg-slate-900 p-7 rounded-2xl border-2 border-primary shadow-xl relative flex flex-col scale-105 z-10">
+        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black tracking-widest px-4 py-1 rounded-full">POPULAR</div>
+        <h4 class="text-lg font-bold mb-1">Health Priority</h4>
+        <p class="text-slate-500 text-sm mb-5">Comprehensive family care</p>
+        <div class="mb-5"><span class="text-3xl font-black text-primary">₹1,999</span><span class="text-slate-500 text-sm">/quarter</span></div>
+        <ul class="space-y-3 mb-6 flex-1 text-sm">
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>5 Consultations / quarter</li>
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>Unlimited follow-up chats</li>
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>Priority booking</li>
+        </ul>
+        <button onclick="selectPlan('Health Priority','1999')" class="w-full py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 shadow-lg text-sm">Select Plan</button>
+      </div>
+      <div class="bg-white dark:bg-slate-900 p-7 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col">
+        <h4 class="text-lg font-bold mb-1">Annual Shield</h4>
+        <p class="text-slate-500 text-sm mb-5">Complete yearly care</p>
+        <div class="mb-5"><span class="text-3xl font-black">₹6,999</span><span class="text-slate-500 text-sm">/year</span></div>
+        <ul class="space-y-3 mb-6 flex-1 text-sm">
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>Unlimited Consultations</li>
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>Family of 4 coverage</li>
+        </ul>
+        <button onclick="selectPlan('Annual Shield','6999')" class="w-full py-2.5 border-2 border-slate-200 dark:border-slate-700 font-bold rounded-xl hover:bg-slate-50 text-sm">Learn More</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="bg-white dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 py-8 px-4">
+  <p class="text-center text-xs text-slate-400">© <span data-year></span> Jivan TeleHealth. All rights reserved.</p>
+</footer>
+<div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
+
+<script>
+const doctors = [
+  { id:'DOC001', name:'Dr. Vikram Sethi',  specialty:'Neurologist',   exp:'15+ years', rating:'4.9', reviews:98,  fee:900, available:'Next 1 hour',    subscription:'premium', img:'https://lh3.googleusercontent.com/aida-public/AB6AXuDLZibAYTSG210jk20S1dBOoLf8jn4dBKPokac_Qd2oQZGwHt8vS0xlwddUQWKz_UUwAOSgWfxSI3mvlHcEl6vhr252vmSiwW2zPlsGHD2a7RNeE7AjcWerp4yzv5RtnulMrLk10SsngOEcnQdDgTy8TLlcGe7s9FjfK2v3gc2OFabHPkDvlicp8CVf5CR4eCM_CVyjWs9-U9CqTaRay8ePqfpzBEwIjcAVQr8kw1N0lLL7c590IsUuZenenqU38t948BYtN7JHmRfI' },
+  { id:'DOC002', name:'Dr. Rajesh Varma',  specialty:'Cardiologist',  exp:'12+ years', rating:'4.8', reviews:145, fee:800, available:'Next 30 mins',   subscription:'pro',     img:'https://lh3.googleusercontent.com/aida-public/AB6AXuDzhTleGlToePRPaWNX8h69e2MsJ5OCXqFIkmC9JkhSFECNqagkv2a88xH1OOPAvk8U_1aMMn4_rAod9OoSEbKW1QJ5tA6H7xXaMiMK_8oScZHSexiekf_F8skgWRjbIPrygmwPMXfotq-BS9jgszHedkbze8RrbGfZRss6UIkHzzT0KalBgRBRH38R_A7FV-2sv87tpMd4i5xPfnADstYuGz__Q7r3YSqeAjUyZzNNvmrnJkmyijUUywr2DE43vXYPnQRj0Co0tVQg' },
+  { id:'DOC003', name:'Dr. Anita Desai',   specialty:'Pediatrician',  exp:'10+ years', rating:'4.7', reviews:210, fee:600, available:'Tomorrow 10 AM', subscription:'free',    img:'https://lh3.googleusercontent.com/aida-public/AB6AXuDP2mxji2TRAmwXbcSrjjdUTMyYs8VAofYft_78o2dbD-ojMunc3sSbq1b5z-yM-vDD2yK2MmYtJL9LwQU5p133Xdtt9rio590iXfFU9CXLelIBTXDZrv9_CvtEktMgv9KNgO5HfF3ewXeCXrSsgmVRZAgLxmC1dNakNvEX-hugi79FKUUsO4pN4mQGKPxguRcfhhhlwQ2nShUUyaQVqPbTYvbX2AieGLfURwvob38rbSAn9ZQXCJOQ8y_IztCpRQmQ0j5gvp1OZYBS' },
+  { id:'DOC004', name:'Dr. Sarah Moorthy', specialty:'Dermatologist', exp:'10+ years', rating:'4.7', reviews:180, fee:700, available:'Today 3 PM',     subscription:'pro',     img:'https://lh3.googleusercontent.com/aida-public/AB6AXuDyxXhzEf5Vg_uWZkOhCvtXBl4MqH6mpoKUoJYPZn0pRUn6MHmYMPdu2AA8KIQFoIFzc2PZeh02mCpc7V56HMFRow7EACnBaK4T7VyTwermjg3K7TpL2SEjv8Z8rz1UdCIwudzFuq_x4OWxnyNVPVpOXSZ4CHpBKRvCJRcNPL3yfz472HXEdtHuWsKgJZxb3rEqn_9_-jn1csF0cJh9hcShhca0BrEZjxq5jSal0DERJuRV3A6unfQUSRAC2Wa_YGrYgPpHjBT2enp6' },
+];
+let selectedDoctor = null, selectedSlot = null, selectedDate = null;
+
+window.addEventListener('DOMContentLoaded', () => {
+  renderDoctors(doctors);
+  buildCalendar();
+  loadMyAppointments();
+});
+
+function renderDoctors(list) {
+  // Sort: premium first, then pro, then free
+  const order = {premium:0, pro:1, free:2};
+  const sorted = [...list].sort((a,b) => (order[a.subscription]||2) - (order[b.subscription]||2));
+  const subBadge = {
+    premium: '<span class="text-[10px] font-black px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-full border border-yellow-300">⭐ PREMIUM</span>',
+    pro:     '<span class="text-[10px] font-black px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full border border-blue-300">PRO</span>',
+    free:    ''
+  };
+  document.getElementById('doctor-list').innerHTML = sorted.map(d => `
+    <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border ${d.subscription==='premium'?'border-yellow-300 dark:border-yellow-700 shadow-yellow-50':'border-slate-200 dark:border-slate-800'} hover:shadow-lg transition-shadow relative">
+      ${d.subscription==='premium'?'<div class="absolute top-3 right-3 text-[10px] font-black px-2 py-1 bg-yellow-500 text-white rounded-full">⭐ Featured</div>':''}
+      <div class="flex flex-col sm:flex-row gap-4">
+        <img class="h-20 w-20 rounded-xl object-cover shrink-0" src="${d.img}" alt="${d.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'80\'><rect fill=\'%230ea5e9\' width=\'80\' height=\'80\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'white\' font-size=\'28\'>DR</text></svg>'"/>
+        <div class="flex-1">
+          <div class="flex justify-between items-start flex-wrap gap-2">
+            <div>
+              <div class="flex items-center gap-2 flex-wrap mb-0.5">
+                <h4 class="text-lg font-bold">${d.name}</h4>
+                ${subBadge[d.subscription]||''}
+              </div>
+              <p class="text-primary font-semibold text-sm">${d.specialty}</p>
+              <div class="flex items-center gap-3 mt-1 text-xs text-slate-500">
+                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs text-yellow-500">star</span>${d.rating} (${d.reviews} reviews)</span>
+                <span>${d.exp}</span>
+              </div>
+            </div>
+            <div class="text-right"><p class="text-xs text-slate-400 uppercase font-bold">Consultation Fee</p><p class="text-2xl font-black">₹${d.fee}</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between flex-wrap gap-3">
+        <span class="text-sm font-semibold ${d.available.includes('30 mins')||d.available.includes('1 hour') ? 'text-green-600' : 'text-slate-500'} flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full ${d.available.includes('30 mins')||d.available.includes('1 hour')?'bg-green-500 animate-pulse':'bg-slate-400'} inline-block"></span>${d.available}
+        </span>
+        <div class="flex gap-2">
+          <button onclick="viewProfile(${JSON.stringify(d).replace(/"/g,'&quot;')})" class="px-4 py-2 border border-primary text-primary font-bold rounded-xl text-sm hover:bg-primary/5">View Profile</button>
+          <button onclick="selectDoctor(${JSON.stringify(d).replace(/"/g,'&quot;')})" class="px-4 py-2 bg-primary text-white font-bold rounded-xl text-sm hover:bg-primary/90">Select & Book</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterDoctors(q) {
+  const filtered = doctors.filter(d => d.name.toLowerCase().includes(q.toLowerCase()) || d.specialty.toLowerCase().includes(q.toLowerCase()));
+  renderDoctors(filtered);
+}
+function filterBySpec(s) { renderDoctors(s ? doctors.filter(d => d.specialty === s) : doctors); }
+function scrollToDoctors() { document.getElementById('doctors-section').scrollIntoView({behavior:'smooth'}); }
+
+function buildCalendar() {
+  const today = new Date();
+  const container = document.getElementById('calendar-days');
+  const days = [];
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(today); d.setDate(today.getDate() + i);
+    days.push(d);
+  }
+  container.innerHTML = days.slice(0,7).map(d => {
+    const isToday = d.toDateString() === today.toDateString();
+    return `<button class="p-1.5 text-xs rounded-lg font-semibold ${isToday ? 'bg-primary text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800'} transition-all" onclick="selectDate(this,'${d.toISOString().split('T')[0]}')">
+      ${d.getDate()}
+    </button>`;
+  }).join('');
+  selectedDate = today.toISOString().split('T')[0];
+}
+
+function selectDate(btn, date) {
+  document.querySelectorAll('#calendar-days button').forEach(b => b.className = 'p-1.5 text-xs rounded-lg font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-all');
+  btn.className = 'p-1.5 text-xs rounded-lg font-semibold bg-primary text-white transition-all';
+  selectedDate = date;
+}
+
+function selectSlot(btn, slot) {
+  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedSlot = slot;
+}
+
+function selectDoctor(doc) {
+  selectedDoctor = doc;
+  document.getElementById('selected-doctor-name').textContent = `${doc.name} — ${doc.specialty} (₹${doc.fee})`;
+  document.getElementById('doctors-section').scrollIntoView({behavior:'smooth'});
+  showToast(`${doc.name} selected. Pick a date and time slot.`, 'info');
+}
+
+async function confirmBooking() {
+  const session = Auth.getSession();
+  if (!session) {
+    showToast('Please login first to book an appointment!', 'error');
+    setTimeout(() => window.location.href = 'login.html', 1500);
+    return;
+  }
+  if (!selectedDoctor) { showToast('Please select a doctor first.', 'error'); return; }
+  if (!selectedSlot)   { showToast('Please select a time slot.', 'error'); return; }
+  if (!selectedDate)   { showToast('Please select a date.', 'error'); return; }
+
+  const btn = document.getElementById('confirm-btn');
+  setLoading(btn, true);
+
+  try {
+    const result = await Appointments.book({
+      doctorId:   selectedDoctor.id,
+      doctorName: selectedDoctor.name,
+      specialty:  selectedDoctor.specialty,
+      fee:        selectedDoctor.fee,
+      date:       selectedDate,
+      time:       selectedSlot,
+      type:       'Video',
+      notes:      ''
+    });
+    setLoading(btn, false);
+
+    if (result.ok) {
+      // Show booking confirmation popup
+      showBookingConfirmed(result.appointment);
+      loadMyAppointments();
+      selectedDoctor = null; selectedSlot = null;
+      document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById('selected-doctor-name').textContent = 'Select a doctor first';
+    } else {
+      showToast(result.msg || 'Booking failed. Try again.', 'error');
+    }
+  } catch(e) {
+    setLoading(btn, false);
+    showToast('Cannot reach server. Make sure node server.js is running.', 'error');
+  }
+}
+
+function showBookingConfirmed(appt) {
+  // Remove existing modal if any
+  const existing = document.getElementById('booking-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'booking-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  modal.innerHTML = `
+    <div style="background:white;border-radius:1.5rem;padding:2.5rem;max-width:420px;width:100%;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,0.3);" class="dark:bg-slate-900">
+      <div style="width:72px;height:72px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
+        <span class="material-symbols-outlined" style="font-size:40px;color:#16a34a;">check_circle</span>
+      </div>
+      <h2 style="font-size:1.5rem;font-weight:900;margin-bottom:0.5rem;color:#0f172a;" class="dark:text-white">Appointment Booked!</h2>
+      <p style="color:#64748b;font-size:0.875rem;margin-bottom:1.5rem;">Your consultation has been confirmed.</p>
+      <div style="background:#f8fafc;border-radius:1rem;padding:1rem;margin-bottom:1.5rem;text-align:left;border:1px solid #e2e8f0;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+          <span style="color:#94a3b8;font-size:0.75rem;font-weight:700;text-transform:uppercase;">Doctor</span>
+          <span style="font-weight:700;font-size:0.875rem;">${appt.doctorName}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+          <span style="color:#94a3b8;font-size:0.75rem;font-weight:700;text-transform:uppercase;">Specialty</span>
+          <span style="font-weight:600;font-size:0.875rem;">${appt.specialty}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+          <span style="color:#94a3b8;font-size:0.75rem;font-weight:700;text-transform:uppercase;">Date</span>
+          <span style="font-weight:600;font-size:0.875rem;">${appt.date}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+          <span style="color:#94a3b8;font-size:0.75rem;font-weight:700;text-transform:uppercase;">Time</span>
+          <span style="font-weight:600;font-size:0.875rem;">${appt.time}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;">
+          <span style="color:#94a3b8;font-size:0.75rem;font-weight:700;text-transform:uppercase;">Fee</span>
+          <span style="font-weight:700;font-size:0.875rem;color:#0ea5e9;">₹${appt.fee}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:0.75rem;">
+        <button onclick="document.getElementById('booking-modal').remove()" style="flex:1;padding:0.75rem;border:2px solid #e2e8f0;border-radius:0.75rem;font-weight:700;font-size:0.875rem;cursor:pointer;background:white;">Close</button>
+        <a href="health.html" style="flex:1;padding:0.75rem;background:#0ea5e9;color:white;border-radius:0.75rem;font-weight:700;font-size:0.875rem;text-decoration:none;display:flex;align-items:center;justify-content:center;">View Records</a>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+async function loadMyAppointments() {
+  const session = Auth.getSession();
+  if (!session) return;
+  const result = await Appointments.mine();
+  if (!result.ok) return;
+  const appts = result.appointments.filter(a => a.status !== 'cancelled');
+  const section = document.getElementById('my-appts-section');
+  const container = document.getElementById('my-appts');
+  if (!appts.length) { section.classList.add('hidden'); return; }
+  section.classList.remove('hidden');
+  container.innerHTML = appts.slice(-3).reverse().map(a => `
+    <div class="flex items-center justify-between p-3 bg-primary/10 rounded-xl text-sm">
+      <div><p class="font-bold text-primary">${a.doctorName}</p><p class="text-xs text-slate-500">${a.date} • ${a.time}</p></div>
+      <span class="text-xs font-bold px-2 py-1 rounded-full ${a.status==='confirmed'?'bg-green-100 text-green-700':'bg-amber-100 text-amber-700'}">${a.status}</span>
+    </div>
+  `).join('');
+}
+
+/* ── View Doctor Profile Modal ── */
+function viewProfile(doc) {
+  const existing = document.getElementById('profile-modal');
+  if (existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'profile-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  modal.innerHTML = `
+    <div style="background:white;border-radius:1.5rem;padding:2rem;max-width:400px;width:100%;box-shadow:0 25px 50px rgba(0,0,0,0.3);">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+        <img src="${doc.img}" style="width:72px;height:72px;border-radius:1rem;object-fit:cover;" alt="${doc.name}"/>
+        <div>
+          <h2 style="font-size:1.2rem;font-weight:900;color:#0f172a;">${doc.name}</h2>
+          <p style="color:#0ea5e9;font-weight:600;font-size:0.875rem;">${doc.specialty}</p>
+          <p style="color:#64748b;font-size:0.75rem;">⭐ ${doc.rating} (${doc.reviews} reviews)</p>
+        </div>
+      </div>
+      <div style="background:#f8fafc;border-radius:1rem;padding:1rem;margin-bottom:1.25rem;border:1px solid #e2e8f0;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+          <span style="color:#94a3b8;font-size:0.75rem;font-weight:700;text-transform:uppercase;">Fee</span>
+          <span style="font-weight:800;color:#0ea5e9;">₹${doc.fee}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+          <span style="color:#94a3b8;font-size:0.75rem;font-weight:700;text-transform:uppercase;">Experience</span>
+          <span style="font-weight:600;font-size:0.875rem;">${doc.exp}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;">
+          <span style="color:#94a3b8;font-size:0.75rem;font-weight:700;text-transform:uppercase;">Next Available</span>
+          <span style="font-weight:600;font-size:0.875rem;color:#16a34a;">${doc.available}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:0.75rem;">
+        <button onclick="document.getElementById('profile-modal').remove()" style="flex:1;padding:0.7rem;border:2px solid #e2e8f0;border-radius:0.75rem;font-weight:700;font-size:0.875rem;cursor:pointer;background:white;">Close</button>
+        <button onclick="selectDoctor(doctors.find(d=>d.id==='${doc.id}'));document.getElementById('profile-modal').remove();scrollToDoctors();" style="flex:1;padding:0.7rem;background:#0ea5e9;color:white;border-radius:0.75rem;font-weight:700;font-size:0.875rem;cursor:pointer;border:none;">Book Now</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+/* ── Live Chat Modal ── */
+
+
+/* ── Plan Subscription Modal ── */
+function selectPlan(name, price) {
+  const session = Auth.getSession();
+  if (!session) { showToast('Please login first!', 'error'); setTimeout(() => window.location.href = 'login.html', 1500); return; }
+  const existing = document.getElementById('plan-modal');
+  if (existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'plan-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  modal.innerHTML = `
+    <div style="background:white;border-radius:1.5rem;padding:2rem;max-width:380px;width:100%;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,0.3);">
+      <div style="width:64px;height:64px;background:#dbeafe;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+        <span class="material-symbols-outlined" style="font-size:36px;color:#2563eb;">verified</span>
+      </div>
+      <h2 style="font-size:1.4rem;font-weight:900;margin-bottom:0.25rem;">${name}</h2>
+      <p style="color:#0ea5e9;font-size:1.75rem;font-weight:900;margin-bottom:0.5rem;">₹${price}</p>
+      <p style="color:#64748b;font-size:0.875rem;margin-bottom:1.5rem;">Subscribing as <strong>${session.name}</strong></p>
+      <div style="display:flex;gap:0.75rem;">
+        <button onclick="document.getElementById('plan-modal').remove()" style="flex:1;padding:0.7rem;border:2px solid #e2e8f0;border-radius:0.75rem;font-weight:700;font-size:0.875rem;cursor:pointer;background:white;">Cancel</button>
+        <button onclick="confirmPlan('${name}','${price}')" style="flex:1;padding:0.7rem;background:#0ea5e9;color:white;border:none;border-radius:0.75rem;font-weight:700;font-size:0.875rem;cursor:pointer;">Confirm</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+function confirmPlan(name, price) {
+  document.getElementById('plan-modal').remove();
+  showToast(`✅ ${name} plan activated! ₹${price} — Payment gateway coming soon.`, 'success', 5000);
+}
+</script>
+
+<script src="chatbot-voice.js"></script>
+<script src="nav-auth.js"></script>
+</body>
+</html>

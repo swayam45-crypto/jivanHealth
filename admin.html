@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<script>(function(){var s=localStorage.getItem('jivan-dark');var p=window.matchMedia('(prefers-color-scheme:dark)').matches;if(s!==null?s==='true':p)document.documentElement.classList.add('dark');})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="X-Content-Type-Options" content="nosniff"/>
+<title>Doctor Dashboard — Jivan TeleHealth</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👨‍⚕️</text></svg>"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="jivan-backend.js"></script>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"mb":"#0ea5e9","mt":"#14b8a6","md":"#0f172a"}}}}</script>
+<style>
+  body{font-family:'Inter',sans-serif;}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}
+  #sidebar{transition:transform 0.3s ease;}
+  @keyframes slideIn{from{transform:translateX(-8px);opacity:0}to{transform:translateX(0);opacity:1}}
+  .slide-in{animation:slideIn 0.3s ease forwards;}
+  @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}
+  .live-dot{animation:pulse-dot 1.5s ease infinite;}
+  .nav-link{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-radius:0.75rem;font-size:0.875rem;font-weight:500;color:#cbd5e1;transition:all 0.15s;}
+  .nav-link:hover{background:#1e293b;}
+  .nav-link.active{background:#0ea5e9;color:#fff;}
+</style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 min-h-screen">
+
+<!-- Mobile overlay -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden" onclick="closeSidebar()"></div>
+
+<!-- Sidebar -->
+<aside id="sidebar" class="w-64 bg-md text-white fixed inset-y-0 left-0 z-40 flex flex-col -translate-x-full md:translate-x-0">
+  <div class="p-5 flex items-center gap-2 border-b border-slate-700">
+    <div class="bg-mb p-1.5 rounded-lg"><span class="material-symbols-outlined text-xl">medical_services</span></div>
+    <span class="font-bold text-lg">Jivan <span class="text-mb">TeleHealth</span></span>
+  </div>
+  <!-- Live indicator -->
+  <div id="live-badge" class="mx-4 mt-3 hidden flex items-center gap-2 px-3 py-2 bg-green-900/40 border border-green-700/50 rounded-xl text-xs text-green-400 font-semibold">
+    <span class="w-2 h-2 bg-green-400 rounded-full live-dot"></span> Live updates ON
+  </div>
+  <nav class="flex-1 px-3 py-3 space-y-1">
+    <a href="#" onclick="showSection('dashboard')" class="nav-link active" id="nav-dashboard">
+      <span class="material-symbols-outlined text-lg">dashboard</span> Dashboard
+    </a>
+    <a href="#" onclick="showSection('today')" class="nav-link" id="nav-today">
+      <span class="material-symbols-outlined text-lg">today</span> Today's Schedule
+      <span id="today-badge" class="ml-auto bg-mb text-white text-[10px] font-black px-1.5 py-0.5 rounded-full hidden"></span>
+    </a>
+    <a href="#" onclick="showSection('all')" class="nav-link" id="nav-all">
+      <span class="material-symbols-outlined text-lg">calendar_month</span> All Appointments
+    </a>
+    <a href="#" onclick="showSection('patients')" class="nav-link" id="nav-patients">
+      <span class="material-symbols-outlined text-lg">group</span> Patients
+    </a>
+    <a href="#" onclick="showSection('subscription')" class="nav-link" id="nav-subscription">
+      <span class="material-symbols-outlined text-lg">star</span> Subscription
+    </a>
+    <a href="emg.html" class="nav-link text-red-400 hover:bg-red-900/30">
+      <span class="material-symbols-outlined text-lg">emergency</span> Emergency
+    </a>
+  </nav>
+  <div class="p-3 border-t border-slate-700">
+    <button onclick="Auth.logout()" class="w-full nav-link hover:bg-red-900/40 hover:text-red-400">
+      <span class="material-symbols-outlined text-lg">logout</span> Logout
+    </button>
+  </div>
+</aside>
+
+<!-- Main content -->
+<main class="md:ml-64 flex flex-col min-h-screen">
+  <!-- Header -->
+  <header class="bg-white dark:bg-slate-900 border-b dark:border-slate-800 sticky top-0 z-20">
+    <div class="px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <button onclick="openSidebar()" class="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div>
+          <h1 class="text-lg font-bold text-slate-800 dark:text-white">Doctor's Dashboard</h1>
+          <p id="welcome-msg" class="text-xs text-slate-400">Loading...</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <!-- New booking notification bell -->
+        <button id="notif-btn" class="relative p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hidden" onclick="showSection('today')">
+          <span class="material-symbols-outlined text-xl">notifications</span>
+          <span id="notif-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center"></span>
+        </button>
+        <button onclick="DarkMode.toggle()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300">
+          <span class="material-symbols-outlined text-lg" data-dark-icon>dark_mode</span>
+        </button>
+        <div id="doctor-avatar" class="w-9 h-9 rounded-full bg-mb flex items-center justify-center text-white font-bold text-sm select-none">DR</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="p-4 lg:p-6 max-w-7xl mx-auto w-full space-y-6">
+
+    <!-- ── DASHBOARD ── -->
+    <div id="section-dashboard">
+      <!-- Stats -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-xl shadow-sm border-b-4 border-mb">
+          <div class="flex justify-between mb-2">
+            <div class="p-2 bg-blue-50 dark:bg-blue-900/30 text-mb rounded-lg"><span class="material-symbols-outlined text-lg">today</span></div>
+          </div>
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Patients Today</p>
+          <h3 id="stat-today" class="text-3xl font-black text-slate-800 dark:text-white">—</h3>
+        </div>
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-xl shadow-sm border-b-4 border-amber-400">
+          <div class="p-2 bg-amber-50 dark:bg-amber-900/30 text-amber-500 rounded-lg w-fit mb-2"><span class="material-symbols-outlined text-lg">pending</span></div>
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Pending</p>
+          <h3 id="stat-pending" class="text-3xl font-black text-slate-800 dark:text-white">—</h3>
+        </div>
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-xl shadow-sm border-b-4 border-green-500">
+          <div class="p-2 bg-green-50 dark:bg-green-900/30 text-green-600 rounded-lg w-fit mb-2"><span class="material-symbols-outlined text-lg">check_circle</span></div>
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Confirmed</p>
+          <h3 id="stat-confirmed" class="text-3xl font-black text-slate-800 dark:text-white">—</h3>
+        </div>
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-xl shadow-sm border-b-4 border-purple-500">
+          <div class="p-2 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-lg w-fit mb-2"><span class="material-symbols-outlined text-lg">calendar_month</span></div>
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Total</p>
+          <h3 id="stat-total" class="text-3xl font-black text-slate-800 dark:text-white">—</h3>
+        </div>
+      </div>
+      <!-- Today's quick preview -->
+      <div class="grid lg:grid-cols-2 gap-6">
+        <div class="bg-white dark:bg-slate-900 rounded-xl border dark:border-slate-800 overflow-hidden">
+          <div class="px-5 py-4 border-b dark:border-slate-800 flex justify-between items-center">
+            <h2 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+              <span class="material-symbols-outlined text-mb text-lg">today</span> Today's Schedule
+            </h2>
+            <button onclick="showSection('today')" class="text-xs text-mb font-bold hover:underline">View all →</button>
+          </div>
+          <div id="dash-today-list" class="divide-y dark:divide-slate-800"></div>
+        </div>
+        <div class="bg-white dark:bg-slate-900 rounded-xl border dark:border-slate-800 overflow-hidden">
+          <div class="px-5 py-4 border-b dark:border-slate-800 flex justify-between items-center">
+            <h2 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+              <span class="material-symbols-outlined text-amber-500 text-lg">pending</span> Pending Actions
+            </h2>
+          </div>
+          <div id="dash-pending-list" class="divide-y dark:divide-slate-800"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TODAY'S SCHEDULE ── -->
+    <div id="section-today" class="hidden">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-mb">today</span>
+          Today's Schedule — <span id="today-date-label" class="text-mb"></span>
+        </h2>
+        <button onclick="loadDashboard()" class="flex items-center gap-1 text-xs text-mb font-bold hover:underline">
+          <span class="material-symbols-outlined text-sm">refresh</span> Refresh
+        </button>
+      </div>
+      <div id="section-today-list" class="space-y-3"></div>
+    </div>
+
+    <!-- ── ALL APPOINTMENTS ── -->
+    <div id="section-all" class="hidden">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <h2 class="text-xl font-bold text-slate-800 dark:text-white">All Appointments</h2>
+        <input id="search-all" oninput="filterAll(this.value)" placeholder="Search patient name or ID…"
+          class="px-4 py-2 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-xl text-sm outline-none focus:border-mb w-56"/>
+      </div>
+      <div class="bg-white dark:bg-slate-900 rounded-xl border dark:border-slate-800 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50 dark:bg-slate-800/60">
+              <tr class="text-xs text-slate-400 uppercase tracking-wider">
+                <th class="px-4 py-3 text-left">Patient</th>
+                <th class="px-4 py-3 text-left">Date & Time</th>
+                <th class="px-4 py-3 text-left">Type</th>
+                <th class="px-4 py-3 text-left">Status</th>
+                <th class="px-4 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="all-appointments-tbody" class="divide-y dark:divide-slate-800"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PATIENTS ── -->
+    <div id="section-patients" class="hidden">
+      <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Registered Patients</h2>
+      <div id="patients-list" class="space-y-3"></div>
+    </div>
+
+    <!-- ── SUBSCRIPTION ── -->
+    <div id="section-subscription" class="hidden">
+      <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-1 flex items-center gap-2">
+        <span class="material-symbols-outlined text-yellow-500">star</span> Subscription Plan
+      </h2>
+      <p class="text-slate-500 dark:text-slate-400 text-sm mb-6">Higher plans appear first in patient search results.</p>
+      <div class="grid md:grid-cols-3 gap-5">
+        <!-- Free -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 flex flex-col">
+          <h3 class="font-bold text-lg mb-1">Free</h3>
+          <p class="text-3xl font-black mb-1">₹0<span class="text-sm font-normal text-slate-400">/mo</span></p>
+          <p class="text-slate-500 text-sm mb-4">Basic listing</p>
+          <ul class="text-sm space-y-2 flex-1 mb-5">
+            <li class="flex gap-2 items-center"><span class="material-symbols-outlined text-green-500 text-lg">check</span>Accept appointments</li>
+            <li class="flex gap-2 items-center text-slate-400"><span class="material-symbols-outlined text-slate-300 text-lg">close</span>Priority listing</li>
+            <li class="flex gap-2 items-center text-slate-400"><span class="material-symbols-outlined text-slate-300 text-lg">close</span>Featured badge</li>
+          </ul>
+          <button id="btn-plan-free" onclick="upgradePlan('free')"
+            class="w-full py-2.5 border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold rounded-xl text-sm transition-all hover:bg-slate-50 dark:hover:bg-slate-800">
+            Free Plan
+          </button>
+        </div>
+        <!-- Pro -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border-2 border-mb p-6 flex flex-col shadow-xl relative">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-mb text-white text-[10px] font-black px-3 py-1 rounded-full">POPULAR</div>
+          <h3 class="font-bold text-lg mb-1 text-mb">Pro</h3>
+          <p class="text-3xl font-black mb-1 text-mb">₹999<span class="text-sm font-normal text-slate-400">/mo</span></p>
+          <p class="text-slate-500 text-sm mb-4">For growing practices</p>
+          <ul class="text-sm space-y-2 flex-1 mb-5">
+            <li class="flex gap-2 items-center"><span class="material-symbols-outlined text-green-500 text-lg">check</span>Everything in Free</li>
+            <li class="flex gap-2 items-center"><span class="material-symbols-outlined text-green-500 text-lg">check</span>2nd in patient search</li>
+            <li class="flex gap-2 items-center"><span class="material-symbols-outlined text-green-500 text-lg">check</span>Pro badge</li>
+          </ul>
+          <button id="btn-plan-pro" onclick="upgradePlan('pro')"
+            class="w-full py-2.5 bg-mb text-white font-bold rounded-xl text-sm hover:bg-sky-600 transition-all shadow-lg">
+            Upgrade to Pro
+          </button>
+        </div>
+        <!-- Premium -->
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-yellow-500/40 p-6 flex flex-col text-white shadow-xl">
+          <h3 class="font-bold text-lg mb-1 text-yellow-400">Premium ⭐</h3>
+          <p class="text-3xl font-black mb-1 text-yellow-400">₹2,499<span class="text-sm font-normal text-white/50">/mo</span></p>
+          <p class="text-white/60 text-sm mb-4">Maximum visibility</p>
+          <ul class="text-sm space-y-2 flex-1 mb-5">
+            <li class="flex gap-2 items-center"><span class="material-symbols-outlined text-green-400 text-lg">check</span>Everything in Pro</li>
+            <li class="flex gap-2 items-center"><span class="material-symbols-outlined text-yellow-400 text-lg">star</span><strong>1st position</strong> in search</li>
+            <li class="flex gap-2 items-center"><span class="material-symbols-outlined text-green-400 text-lg">check</span>Premium badge</li>
+          </ul>
+          <button id="btn-plan-premium" onclick="upgradePlan('premium')"
+            class="w-full py-2.5 bg-yellow-500 text-slate-900 font-black rounded-xl text-sm hover:bg-yellow-400 transition-all shadow-lg">
+            Upgrade to Premium
+          </button>
+        </div>
+      </div>
+      <p class="text-center text-xs text-slate-400 dark:text-slate-500 mt-5">
+        💡 Premium → shown first. Pro → shown second. Free → shown last in patient search.
+      </p>
+    </div>
+
+  </div><!-- end content -->
+</main>
+
+<!-- New appointment toast (live notification) -->
+<div id="live-toast" class="fixed top-20 right-4 z-[9999] hidden max-w-sm w-full">
+  <div class="bg-white dark:bg-slate-900 border-l-4 border-green-500 rounded-xl shadow-2xl p-4 flex items-start gap-3">
+    <div class="w-9 h-9 bg-green-100 dark:bg-green-900/40 text-green-600 rounded-xl flex items-center justify-center shrink-0">
+      <span class="material-symbols-outlined text-xl">notifications_active</span>
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="font-bold text-slate-900 dark:text-white text-sm">New Booking!</p>
+      <p id="live-toast-msg" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5"></p>
+    </div>
+    <button onclick="document.getElementById('live-toast').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 shrink-0">
+      <span class="material-symbols-outlined text-lg">close</span>
+    </button>
+  </div>
+</div>
+
+<div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
+
+<script>
+const API_BASE = 'http://localhost:3000/api';
+let allAppointments = [];
+let newNotifCount = 0;
+
+// ── Helpers ───────────────────────────────────────────────────
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+}
+function statusClass(s) {
+  return s === 'confirmed' ? 'bg-green-50 text-green-600 border border-green-200' :
+         s === 'cancelled' ? 'bg-red-50 text-red-600 border border-red-200' :
+                             'bg-amber-50 text-amber-600 border border-amber-200';
+}
+
+// ── Init ──────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
+  const session = Auth.getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
+  if (session.role !== 'doctor') { window.location.href = 'health.html'; return; }
+
+  const me = await Auth.me();
+  const user = me.ok ? me.user : { name: session.name, subscription: 'free' };
+
+  document.getElementById('welcome-msg').textContent = 'Dr. ' + user.name.replace(/^Dr\.?\s*/i,'');
+  const initials = user.name.replace(/^Dr\.?\s*/i,'').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('doctor-avatar').textContent = initials;
+
+  // Set today's date label
+  document.getElementById('today-date-label').textContent =
+    new Date().toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long' });
+
+  await loadDashboard();
+  loadSubscriptionState(user.subscription);
+  connectLiveUpdates();
+});
+
+// ── Load all data ──────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const [apptRes, emgRes] = await Promise.all([
+      Appointments.mine(),
+      Emergency.all()
+    ]);
+
+    allAppointments = apptRes.ok ? apptRes.appointments : [];
+    const emergencies = emgRes.ok ? emgRes.emergencies : [];
+
+    const today  = todayStr();
+    const todayA = allAppointments.filter(a => a.date === today);
+    const pending = allAppointments.filter(a => a.status === 'pending');
+    const confirmed = allAppointments.filter(a => a.status === 'confirmed');
+
+    // Stats
+    document.getElementById('stat-today').textContent     = todayA.length;
+    document.getElementById('stat-pending').textContent   = pending.length;
+    document.getElementById('stat-confirmed').textContent = confirmed.length;
+    document.getElementById('stat-total').textContent     = allAppointments.length;
+
+    // Today badge
+    const badge = document.getElementById('today-badge');
+    if (todayA.length) { badge.textContent = todayA.length; badge.classList.remove('hidden'); }
+
+    renderDashToday(todayA);
+    renderDashPending(pending);
+    renderTodaySection(todayA);
+    renderAllTable(allAppointments);
+  } catch(e) {
+    showToast('Server not reachable. Run: node server.js', 'error', 6000);
+  }
+}
+
+// ── Dashboard: today preview ──────────────────────────────────
+function renderDashToday(list) {
+  const el = document.getElementById('dash-today-list');
+  if (!list.length) {
+    el.innerHTML = '<p class="text-slate-400 dark:text-slate-500 text-sm p-5 text-center">No appointments today 🎉</p>';
+    return;
+  }
+  el.innerHTML = list.slice(0,5).map(a => `
+    <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition slide-in">
+      <div class="w-12 text-center shrink-0">
+        <p class="text-xs font-black text-mb leading-none">${esc(a.time.split(' ')[0])}</p>
+        <p class="text-[9px] text-mb/60 uppercase">${esc(a.time.split(' ')[1]||'')}</p>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-semibold text-slate-800 dark:text-white truncate">${esc(a.patientName||'Patient')}</p>
+        <p class="text-xs text-slate-400">${esc(a.type)} · ${esc(a.specialty||a.notes||'General')}</p>
+      </div>
+      <span class="text-[10px] font-bold px-2 py-1 rounded-full ${statusClass(a.status)}">${esc(a.status)}</span>
+    </div>`).join('');
+}
+
+// ── Dashboard: pending actions ────────────────────────────────
+function renderDashPending(list) {
+  const el = document.getElementById('dash-pending-list');
+  if (!list.length) {
+    el.innerHTML = '<p class="text-slate-400 dark:text-slate-500 text-sm p-5 text-center">No pending appointments ✅</p>';
+    return;
+  }
+  el.innerHTML = list.slice(0,5).map(a => `
+    <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition slide-in">
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-semibold text-slate-800 dark:text-white truncate">${esc(a.patientName||'Patient')}</p>
+        <p class="text-xs text-slate-400">${fmtDate(a.date)} · ${esc(a.time)}</p>
+      </div>
+      <button onclick="confirmAppt('${esc(a.id)}')"
+        class="shrink-0 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg transition">
+        ✓ Confirm
+      </button>
+    </div>`).join('');
+}
+
+// ── Today's full schedule section ────────────────────────────
+function renderTodaySection(list) {
+  const el = document.getElementById('section-today-list');
+  if (!list.length) {
+    el.innerHTML = `
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border dark:border-slate-800 p-10 text-center">
+        <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-3 block">event_available</span>
+        <p class="text-slate-500 dark:text-slate-400 font-semibold">No appointments today</p>
+        <p class="text-slate-400 text-sm mt-1">New bookings will appear here instantly when patients book.</p>
+      </div>`;
+    return;
+  }
+  el.innerHTML = list.map(a => `
+    <div class="bg-white dark:bg-slate-900 rounded-xl border dark:border-slate-800 p-4 slide-in" id="appt-${esc(a.id)}">
+      <div class="flex items-start gap-4">
+        <!-- Time block -->
+        <div class="w-16 shrink-0 text-center bg-mb/10 rounded-xl py-2">
+          <p class="text-base font-black text-mb leading-none">${esc(a.time.split(' ')[0])}</p>
+          <p class="text-[10px] text-mb/70 uppercase font-semibold">${esc(a.time.split(' ')[1]||'')}</p>
+        </div>
+        <!-- Details -->
+        <div class="flex-1 min-w-0">
+          <div class="flex items-start justify-between gap-2 flex-wrap">
+            <div>
+              <p class="font-bold text-slate-900 dark:text-white">${esc(a.patientName||'Patient')}</p>
+              <p class="text-sm text-slate-500">${esc(a.type)} · ${esc(a.specialty||a.notes||'General')} · ₹${esc(String(a.fee||''))}</p>
+              <p class="text-xs text-slate-400 mt-0.5">ID: ${esc(a.id)}</p>
+            </div>
+            <span class="text-[11px] font-bold px-3 py-1 rounded-full ${statusClass(a.status)}">${esc(a.status)}</span>
+          </div>
+          <!-- Action buttons -->
+          <div class="flex gap-2 mt-3 flex-wrap">
+            ${a.status !== 'confirmed' && a.status !== 'cancelled' ? `
+              <button onclick="confirmAppt('${esc(a.id)}')"
+                class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg transition flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">check_circle</span> Confirm
+              </button>` : ''}
+            ${a.status !== 'cancelled' ? `
+              <button onclick="showToast('Starting video call for ${esc(a.patientName||'patient')}…','info')"
+                class="px-4 py-2 bg-mb hover:bg-sky-600 text-white text-xs font-bold rounded-lg transition flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">videocam</span> Join Call
+              </button>
+              <button onclick="cancelAppt('${esc(a.id)}')"
+                class="px-4 py-2 bg-red-50 hover:bg-red-500 text-red-500 hover:text-white text-xs font-bold rounded-lg transition border border-red-200 hover:border-red-500">
+                Cancel
+              </button>` : '<span class="text-xs text-slate-400 italic">Appointment cancelled</span>'}
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── All appointments table ────────────────────────────────────
+function renderAllTable(list) {
+  const tbody = document.getElementById('all-appointments-tbody');
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-slate-400 py-10 text-sm">No appointments found.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(a => `
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+      <td class="px-4 py-3">
+        <p class="font-semibold text-sm text-slate-800 dark:text-white">${esc(a.patientName||'Patient')}</p>
+        <p class="text-xs text-slate-400">${esc(a.id)}</p>
+      </td>
+      <td class="px-4 py-3 text-xs text-slate-600 dark:text-slate-400">
+        <p class="font-semibold">${fmtDate(a.date)}</p>
+        <p>${esc(a.time)}</p>
+      </td>
+      <td class="px-4 py-3">
+        <span class="text-xs px-2 py-0.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded font-semibold">${esc(a.type)}</span>
+      </td>
+      <td class="px-4 py-3">
+        <span class="text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${statusClass(a.status)}">${esc(a.status)}</span>
+      </td>
+      <td class="px-4 py-3 text-right flex items-center justify-end gap-2">
+        ${a.status !== 'confirmed' && a.status !== 'cancelled' ?
+          `<button onclick="confirmAppt('${esc(a.id)}')" class="text-xs font-bold text-green-600 hover:underline">Confirm</button>` : ''}
+        ${a.status !== 'cancelled' ?
+          `<button onclick="cancelAppt('${esc(a.id)}')" class="text-xs font-bold text-red-400 hover:underline">Cancel</button>` : ''}
+      </td>
+    </tr>`).join('');
+}
+
+function filterAll(q) {
+  const lq = q.toLowerCase();
+  const filtered = allAppointments.filter(a =>
+    (a.patientName||'').toLowerCase().includes(lq) ||
+    (a.id||'').toLowerCase().includes(lq) ||
+    (a.specialty||'').toLowerCase().includes(lq)
+  );
+  renderAllTable(filtered);
+}
+
+// ── Confirm / Cancel ──────────────────────────────────────────
+async function confirmAppt(id) {
+  const res = await Appointments.setStatus(id, 'confirmed');
+  if (res.ok) {
+    const idx = allAppointments.findIndex(a => a.id === id);
+    if (idx !== -1) allAppointments[idx].status = 'confirmed';
+    await loadDashboard();
+    showToast('Appointment confirmed! ✅', 'success');
+  } else showToast(res.msg || 'Failed to confirm.', 'error');
+}
+
+async function cancelAppt(id) {
+  if (!confirm('Cancel this appointment?')) return;
+  const res = await Appointments.setStatus(id, 'cancelled');
+  if (res.ok) {
+    const idx = allAppointments.findIndex(a => a.id === id);
+    if (idx !== -1) allAppointments[idx].status = 'cancelled';
+    await loadDashboard();
+    showToast('Appointment cancelled.', 'warning');
+  } else showToast(res.msg || 'Failed to cancel.', 'error');
+}
+
+// ── Section navigation ────────────────────────────────────────
+const SECTIONS = ['dashboard','today','all','patients','subscription'];
+
+async function showSection(name) {
+  SECTIONS.forEach(s => {
+    const el = document.getElementById('section-' + s);
+    if (el) el.classList.toggle('hidden', s !== name);
+    const nav = document.getElementById('nav-' + s);
+    if (nav) { nav.classList.toggle('active', s === name); }
+  });
+
+  if (name === 'patients') await loadPatients();
+  closeSidebar();
+
+  // Clear notif count when they view today
+  if (name === 'today') {
+    newNotifCount = 0;
+    document.getElementById('notif-btn').classList.add('hidden');
+  }
+}
+
+async function loadPatients() {
+  try {
+    const res  = await fetch(API_BASE + '/users', { headers: { 'x-session-token': Session.getToken() } });
+    const data = await res.json();
+    const pts  = (data.users || []).filter(u => u.role === 'patient');
+    const el   = document.getElementById('patients-list');
+    el.innerHTML = pts.length ? pts.map(u => `
+      <div class="bg-white dark:bg-slate-900 rounded-xl border dark:border-slate-800 p-4 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-full bg-mb flex items-center justify-center text-white font-bold text-sm">
+            ${esc(u.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase())}
+          </div>
+          <div>
+            <p class="font-bold text-slate-800 dark:text-white">${esc(u.name)}</p>
+            <p class="text-xs text-slate-400">${esc(u.jivanId||'')} · ${esc(u.phone||'')}</p>
+            ${u.conditions ? `<p class="text-xs text-slate-500 mt-0.5">Condition: ${esc(u.conditions)}</p>` : ''}
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          ${u.bloodGroup ? `<span class="text-xs px-2 py-1 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-black rounded-lg">${esc(u.bloodGroup)}</span>` : ''}
+        </div>
+      </div>`).join('') : '<p class="text-slate-400 text-center py-10">No patients yet.</p>';
+  } catch(e) {
+    document.getElementById('patients-list').innerHTML = '<p class="text-red-400 text-center py-10">Could not load. Is server running?</p>';
+  }
+}
+
+// ── Subscription ──────────────────────────────────────────────
+function loadSubscriptionState(plan) {
+  const current = plan || 'free';
+  ['free','pro','premium'].forEach(p => {
+    const btn = document.getElementById('btn-plan-' + p);
+    if (!btn) return;
+    if (p === current) {
+      btn.textContent = '✓ Current Plan';
+      btn.disabled = true;
+      btn.classList.add('opacity-60','cursor-not-allowed');
+    } else {
+      btn.disabled = false;
+      btn.classList.remove('opacity-60','cursor-not-allowed');
+      btn.textContent = p === 'free' ? 'Downgrade to Free' : 'Upgrade to ' + p.charAt(0).toUpperCase() + p.slice(1);
+    }
+  });
+}
+
+async function upgradePlan(plan) {
+  const res = await Doctors.updateSubscription(plan);
+  if (res.ok) {
+    showToast('Plan updated to ' + plan.toUpperCase() + ' ✅', 'success');
+    loadSubscriptionState(plan);
+  } else showToast(res.msg || 'Failed to update.', 'error');
+}
+
+// ── Live SSE notifications ────────────────────────────────────
+function connectLiveUpdates() {
+  LiveUpdates.connect({
+    onNewAppointment: (appt) => {
+      // Add to local list
+      allAppointments.unshift(appt);
+      loadDashboard();
+
+      // Show live toast
+      const toast = document.getElementById('live-toast');
+      document.getElementById('live-toast-msg').textContent =
+        `${appt.patientName || 'A patient'} booked ${appt.specialty || 'a consultation'} at ${appt.time} on ${fmtDate(appt.date)}`;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 7000);
+
+      // Bell notification
+      newNotifCount++;
+      const btn = document.getElementById('notif-btn');
+      btn.classList.remove('hidden');
+      document.getElementById('notif-count').textContent = newNotifCount;
+
+      // Show live badge in sidebar
+      document.getElementById('live-badge').classList.remove('hidden');
+
+      showToast('🔔 New appointment from ' + (appt.patientName || 'patient') + '!', 'success', 5000);
+    }
+  });
+}
+
+// ── Sidebar ───────────────────────────────────────────────────
+function openSidebar() {
+  document.getElementById('sidebar').classList.remove('-translate-x-full');
+  document.getElementById('sidebar-overlay').classList.remove('hidden');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.add('-translate-x-full');
+  document.getElementById('sidebar-overlay').classList.add('hidden');
+}
+</script>
+
+<script src="chatbot-voice.js"></script>
+<script src="nav-auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-Content-Type-Options" content="nosniff"/>
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN"/>
+<meta name="referrer" content="strict-origin-when-cross-origin"/>
+<script>
+(function(){var s=localStorage.getItem('jivan-dark');var p=window.matchMedia('(prefers-color-scheme:dark)').matches;if(s!==null?s==='true':p)document.documentElement.classList.add('dark');})();
+</script>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Health Records — Jivan TeleHealth</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="jivan-backend.js"></script>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#2563eb","secondary":"#0d9488","background-light":"#f8fafc","background-dark":"#0f172a"},fontFamily:{"display":["Public Sans","sans-serif"]}}}}</script>
+<style>
+  body{font-family:'Public Sans',sans-serif;}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}
+  #mobile-drawer{transition:transform 0.3s ease;}
+  .tab-btn.active{color:#2563eb;border-bottom:2px solid #2563eb;font-weight:700;}
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center;}
+  .modal-bg.open{display:flex;}
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+
+<div id="menu-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" onclick="MobileMenu.close()"></div>
+<div id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 bg-white dark:bg-slate-900 z-50 shadow-2xl -translate-x-full flex flex-col">
+  <div class="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800">
+    <span class="font-extrabold text-primary">Jivan TeleHealth</span>
+    <button onclick="MobileMenu.close()" class="p-2 rounded-lg"><span class="material-symbols-outlined">close</span></button>
+  </div>
+  <nav class="flex flex-col gap-1 p-4">
+    <a href="index.html" class="px-4 py-3 rounded-xl hover:bg-primary/10 font-semibold text-sm">🏠 Home</a>
+    <a href="call.html" class="px-4 py-3 rounded-xl hover:bg-primary/10 font-semibold text-sm">📹 Consultations</a>
+    <a href="emg.html" class="px-4 py-3 rounded-xl hover:bg-primary/10 font-semibold text-sm text-red-500">🚨 Emergency</a>
+  </nav>
+  <div class="p-4 mt-auto border-t border-slate-100 dark:border-slate-800">
+    <button onclick="Auth.logout()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 font-bold rounded-xl text-sm">Logout</button>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 lg:px-10 py-3 sticky top-0 z-30">
+  <div class="flex items-center gap-6">
+    <a href="index.html" class="flex items-center gap-2 text-primary">
+      <span class="material-symbols-outlined text-2xl">medical_services</span>
+      <span class="font-bold text-slate-900 dark:text-white text-lg hidden sm:block">Jivan TeleHealth</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-5">
+      <a href="index.html" class="text-slate-500 hover:text-primary text-sm font-medium transition-colors">Dashboard</a>
+      <a href="health.html" class="text-primary text-sm font-bold border-b-2 border-primary pb-1">Records</a>
+      <a href="call.html" class="text-slate-500 hover:text-primary text-sm font-medium transition-colors">Consultations</a>
+    </nav>
+  </div>
+  <div class="flex items-center gap-2">
+    <button onclick="DarkMode.toggle()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+      <span class="material-symbols-outlined text-[20px]" data-dark-icon>dark_mode</span>
+    </button>
+    <button id="nav-user-chip" style="display:none" class="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-xl text-sm font-bold">
+      <span class="material-symbols-outlined text-lg">account_circle</span>
+      <span id="nav-user-name"></span>
+    </button>
+    <button onclick="Auth.logout()" class="hidden sm:block px-4 py-2 text-sm font-bold text-slate-500 hover:text-red-500 transition-colors">Logout</button>
+    <button onclick="MobileMenu.open()" class="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto w-full p-4 lg:p-8 space-y-6">
+
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+    <div>
+      <h1 class="text-3xl font-black tracking-tight">Health Records</h1>
+      <p id="patient-welcome" class="text-slate-500 mt-1">Loading your health data...</p>
+    </div>
+    <button onclick="openAddModal()" class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-primary/20">
+      <span class="material-symbols-outlined text-xl">upload</span> Add Record
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary"><span class="material-symbols-outlined">history</span></div>
+        <span class="font-bold text-sm text-slate-600 dark:text-slate-300">Total Records</span>
+      </div>
+      <p id="stat-total" class="text-4xl font-black">0</p>
+    </div>
+    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary"><span class="material-symbols-outlined">prescriptions</span></div>
+        <span class="font-bold text-sm text-slate-600 dark:text-slate-300">Active Prescriptions</span>
+      </div>
+      <p id="stat-prescriptions" class="text-4xl font-black">0</p>
+    </div>
+    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary"><span class="material-symbols-outlined">badge</span></div>
+        <span class="font-bold text-sm text-slate-600 dark:text-slate-300">Jivan ID</span>
+      </div>
+      <p id="stat-jivanid" class="text-lg font-black font-mono text-primary">--</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Records List -->
+    <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+      <!-- Tabs -->
+      <div class="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 overflow-x-auto">
+        <button class="tab-btn active px-6 py-4 text-sm whitespace-nowrap" onclick="switchTab('all', this)">All Records</button>
+        <button class="tab-btn px-6 py-4 text-sm text-slate-500 hover:text-slate-900 dark:hover:text-white whitespace-nowrap" onclick="switchTab('Prescription', this)">Prescriptions</button>
+        <button class="tab-btn px-6 py-4 text-sm text-slate-500 hover:text-slate-900 dark:hover:text-white whitespace-nowrap" onclick="switchTab('Lab Report', this)">Lab Reports</button>
+      </div>
+      <div id="records-list" class="p-4 space-y-3 min-h-[200px]">
+        <p class="text-slate-400 text-sm text-center py-8">Loading records...</p>
+      </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="space-y-5">
+      <!-- JIVAN ID Card -->
+      <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-xl relative overflow-hidden">
+        <div class="relative z-10">
+          <div class="flex justify-between items-start mb-3">
+            <h4 class="font-bold">JIVAN ID</h4>
+            <span class="material-symbols-outlined text-white/40">qr_code_2</span>
+          </div>
+          <div class="bg-white/10 rounded-xl p-3 mb-3">
+            <p class="text-[10px] text-white/60 uppercase font-bold tracking-widest mb-1">Digital Health Identity</p>
+            <div id="jivan-id-card" class="font-mono text-lg font-black tracking-widest">JIV-XXX-XXX-XX</div>
+          </div>
+          <p class="text-xs text-slate-400 mb-4">Scan at any authorized Jivan clinic for instant records.</p>
+          <button onclick="copyJivanId()" class="w-full bg-white text-slate-900 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-100 transition-colors flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-sm">content_copy</span> Copy Jivan ID
+          </button>
+        </div>
+        <div class="absolute -right-6 -top-6 w-28 h-28 bg-primary opacity-20 rounded-full blur-2xl"></div>
+      </div>
+
+      <!-- Patient Profile -->
+      <div id="patient-profile" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+        <h3 class="font-bold mb-3 flex items-center gap-2 text-sm"><span class="material-symbols-outlined text-primary">person</span> Patient Profile</h3>
+        <div id="profile-content" class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+          <p class="text-slate-400 text-xs">Loading...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Add Record Modal -->
+<div id="add-modal" class="modal-bg" onclick="closeAddModal(event)">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="text-lg font-bold">Add Health Record</h3>
+      <button onclick="closeAddModal()" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-semibold mb-1.5">Record Title *</label>
+        <input id="add-title" type="text" placeholder="e.g. CBC Blood Test" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-primary"/>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5">Record Type *</label>
+        <select id="add-type" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-primary">
+          <option>Lab Report</option><option>Prescription</option><option>Clinical Note</option><option>Vaccination</option><option>Surgery</option>
+        </select>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold mb-1.5">Doctor</label>
+          <input id="add-doctor" type="text" placeholder="Dr. Name" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-primary"/>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1.5">Date</label>
+          <input id="add-date" type="date" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-primary"/>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1.5">Details / Notes</label>
+        <textarea id="add-details" rows="3" placeholder="Key findings or notes..." class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-primary resize-none"></textarea>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-5">
+      <button onclick="closeAddModal()" class="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+      <button onclick="saveRecord()" class="flex-1 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-blue-700 transition-colors">Save Record</button>
+    </div>
+  </div>
+</div>
+
+<footer class="border-t border-slate-200 dark:border-slate-800 py-6 bg-white dark:bg-slate-900 px-4 mt-8">
+  <p class="text-center text-xs text-slate-400">© <span data-year></span> Jivan TeleHealth Connect. All rights reserved.</p>
+</footer>
+<div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
+
+<script>
+let currentTab = 'all';
+
+window.addEventListener('DOMContentLoaded', () => {
+  const session = Auth.getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
+  const user = Auth.getCurrentUser();
+  if (user) {
+    document.getElementById('patient-welcome').textContent = `Welcome back, ${user.name}`;
+    document.getElementById('stat-jivanid').textContent = user.jivanId;
+    document.getElementById('jivan-id-card').textContent = user.jivanId;
+    loadProfile(user);
+    // Set today as default date
+    document.getElementById('add-date').value = new Date().toISOString().split('T')[0];
+  }
+  loadRecords();
+});
+
+function loadProfile(user) {
+  document.getElementById('profile-content').innerHTML = `
+    <div class="flex justify-between"><span class="text-slate-400">Name</span><span class="font-semibold text-slate-900 dark:text-white">${user.name}</span></div>
+    <div class="flex justify-between"><span class="text-slate-400">Blood Group</span><span class="font-semibold text-red-500">${user.bloodGroup || 'N/A'}</span></div>
+    <div class="flex justify-between"><span class="text-slate-400">Allergies</span><span class="font-semibold text-amber-600 text-right max-w-[60%]">${user.allergies || 'None'}</span></div>
+    <div class="flex justify-between"><span class="text-slate-400">Conditions</span><span class="font-semibold text-right max-w-[60%]">${user.conditions || 'None'}</span></div>
+  `;
+}
+
+function loadRecords(filter = 'all') {
+  const session = Auth.getSession();
+  let records = Records.getForPatient(session.userId);
+  if (filter !== 'all') records = records.filter(r => r.type === filter);
+
+  const total = Records.getForPatient(session.userId);
+  document.getElementById('stat-total').textContent = total.length;
+  document.getElementById('stat-prescriptions').textContent = total.filter(r => r.type === 'Prescription' && r.status === 'active').length;
+
+  const typeIcons = { 'Lab Report':'science', 'Prescription':'pill', 'Clinical Note':'stethoscope', 'Vaccination':'vaccines', 'Surgery':'surgical' };
+  const statusColors = { normal:'bg-green-100 text-green-700', active:'bg-blue-100 text-blue-700', attention:'bg-amber-100 text-amber-700' };
+
+  const container = document.getElementById('records-list');
+  if (!records.length) {
+    container.innerHTML = '<p class="text-slate-400 text-sm text-center py-10">No records found. Click "Add Record" to add one.</p>';
+    return;
+  }
+  container.innerHTML = records.map(r => `
+    <div class="p-4 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+      <div class="flex items-start gap-3 justify-between">
+        <div class="flex items-start gap-3 flex-1">
+          <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+            <span class="material-symbols-outlined text-xl">${typeIcons[r.type] || 'description'}</span>
+          </div>
+          <div>
+            <h4 class="font-bold text-sm text-slate-900 dark:text-white">${r.title}</h4>
+            <p class="text-xs text-slate-500">${r.doctor || 'Unknown'} • ${r.date || ''} • ${r.hospital || ''}</p>
+            <div class="flex gap-2 mt-1.5 flex-wrap">
+              <span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-xs font-bold rounded">${r.type}</span>
+              ${r.status ? `<span class="px-2 py-0.5 text-xs font-bold rounded ${statusColors[r.status] || 'bg-slate-100 text-slate-600'}">${r.status}</span>` : ''}
+            </div>
+            ${r.details ? `<p class="text-xs text-slate-500 mt-1.5 leading-relaxed">${r.details}</p>` : ''}
+          </div>
+        </div>
+        <button onclick="deleteRecord('${r.id}')" class="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-red-500 transition-all rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
+          <span class="material-symbols-outlined text-lg">delete</span>
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function switchTab(filter, btn) {
+  currentTab = filter;
+  document.querySelectorAll('.tab-btn').forEach(b => b.className = 'tab-btn px-6 py-4 text-sm text-slate-500 hover:text-slate-900 dark:hover:text-white whitespace-nowrap');
+  btn.className = 'tab-btn active px-6 py-4 text-sm whitespace-nowrap';
+  loadRecords(filter);
+}
+
+function openAddModal() { document.getElementById('add-modal').classList.add('open'); }
+function closeAddModal(e) {
+  if (!e || e.target === document.getElementById('add-modal')) document.getElementById('add-modal').classList.remove('open');
+}
+
+function saveRecord() {
+  const title = document.getElementById('add-title').value.trim();
+  if (!title) { showToast('Please enter a title', 'error'); return; }
+  const data = {
+    title, type: document.getElementById('add-type').value,
+    doctor: document.getElementById('add-doctor').value.trim(),
+    date: document.getElementById('add-date').value,
+    details: document.getElementById('add-details').value.trim(),
+    hospital: 'Self Added', status: 'normal'
+  };
+  Records.add(data);
+  loadRecords(currentTab);
+  closeAddModal();
+  showToast('Record added successfully!', 'success');
+  // Clear form
+  ['add-title','add-doctor','add-details'].forEach(id => document.getElementById(id).value = '');
+}
+
+function deleteRecord(id) {
+  if (!confirm('Delete this record?')) return;
+  Records.delete(id);
+  loadRecords(currentTab);
+  showToast('Record deleted.', 'info');
+}
+
+function copyJivanId() {
+  const id = document.getElementById('jivan-id-card').textContent;
+  navigator.clipboard.writeText(id).then(() => showToast('Jivan ID copied to clipboard!', 'success'));
+}
+</script>
+
+<script src="chatbot-voice.js"></script>
+<script src="nav-auth.js"></script>
+</body>
+</html>

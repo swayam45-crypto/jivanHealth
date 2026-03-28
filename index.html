@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<!-- Security Headers via meta -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff"/>
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN"/>
+<meta name="referrer" content="strict-origin-when-cross-origin"/>
+<!-- Dark mode MUST run before CSS to prevent flash -->
+<script>
+(function(){
+  var s=localStorage.getItem('jivan-dark');
+  var p=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  if(s!==null?s==='true':p) document.documentElement.classList.add('dark');
+})();
+</script>
+<title>Jivan TeleHealth - Modern Healthcare Solutions</title>
+<!-- SEO Meta Tags -->
+<meta name="description" content="Jivan TeleHealth — consult specialist doctors via video call, manage health records, request ambulance, and access emergency care from anywhere in India."/>
+<meta name="keywords" content="telehealth, online doctor, health records, ambulance, emergency, Jivan, India healthcare"/>
+<meta property="og:title" content="Jivan TeleHealth"/>
+<meta property="og:description" content="Next-gen telemedicine platform connecting patients with India's top medical experts."/>
+<meta property="og:type" content="website"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#0ea5e9",
+          "secondary": "#14b8a6",
+          "accent-red": "#ef4444",
+          "background-light": "#f8fafc",
+          "background-dark": "#0f172a",
+        },
+        fontFamily: { "display": ["Public Sans", "sans-serif"] },
+        borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+      },
+    },
+  }
+</script>
+<style>
+  body { font-family: 'Public Sans', sans-serif; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  #mobile-drawer { transition: transform 0.3s ease; }
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  .fade-up { animation: fadeInUp 0.5s ease forwards; }
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display transition-colors duration-300">
+
+<!-- Mobile Overlay -->
+<div id="menu-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" onclick="closeMobileMenu()"></div>
+
+<!-- Mobile Drawer -->
+<div id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 bg-white dark:bg-slate-900 z-50 shadow-2xl -translate-x-full lg:hidden flex flex-col">
+  <div class="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800">
+    <div class="flex items-center gap-2">
+      <div class="bg-primary p-1.5 rounded-lg text-white"><span class="material-symbols-outlined text-xl">medical_services</span></div>
+      <span class="font-extrabold text-slate-900 dark:text-white">Jivan TeleHealth</span>
+    </div>
+    <button onclick="closeMobileMenu()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <nav class="flex flex-col gap-1 p-4 flex-1">
+    <a href="#home" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-primary/10 text-slate-700 dark:text-slate-200 font-semibold text-sm transition-colors">
+      <span class="material-symbols-outlined text-primary">home</span> Home
+    </a>
+    <a href="#feature" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-primary/10 text-slate-700 dark:text-slate-200 font-semibold text-sm transition-colors">
+      <span class="material-symbols-outlined text-primary">medical_services</span> Services
+    </a>
+    <a href="#Doctorinf" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-primary/10 text-slate-700 dark:text-slate-200 font-semibold text-sm transition-colors">
+      <span class="material-symbols-outlined text-primary">stethoscope</span> Doctors
+    </a>
+    <a href="#emg" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-accent-red/10 text-accent-red font-semibold text-sm transition-colors">
+      <span class="material-symbols-outlined">emergency_share</span> Emergency
+    </a>
+    <a href="#awareness" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-primary/10 text-slate-700 dark:text-slate-200 font-semibold text-sm transition-colors">
+      <span class="material-symbols-outlined text-primary">menu_book</span> Awareness
+    </a>
+  </nav>
+  <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-3">
+    <button onclick="window.location.href='login.html'" class="w-full py-2.5 border-2 border-primary text-primary font-bold rounded-xl hover:bg-primary/5 transition-all text-sm">Login</button>
+    <button onclick="window.location.href='register.html'" class="w-full py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-all text-sm">Register</button>
+  </div>
+</div>
+
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-30 w-full bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-20">
+      <!-- Logo -->
+      <div class="flex items-center gap-2">
+        <div class="bg-primary p-2 rounded-lg text-white">
+          <span class="material-symbols-outlined text-2xl">medical_services</span>
+        </div>
+        <span class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">Jivan <span class="text-primary text-sm font-medium">TeleHealth</span></span>
+      </div>
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex space-x-8">
+        <a class="text-sm font-semibold hover:text-primary transition-colors" href="#home">Home</a>
+        <a class="text-sm font-semibold hover:text-primary transition-colors" href="#feature">Services</a>
+        <a class="text-sm font-semibold hover:text-primary transition-colors" href="#Doctorinf">Doctors</a>
+        <a class="text-sm font-semibold text-accent-red hover:opacity-80 transition-colors" href="#emg">Emergency</a>
+        <a class="text-sm font-semibold hover:text-primary transition-colors" href="#awareness">Awareness</a>
+        <a class="text-sm font-semibold hover:text-primary transition-colors" href="#news">News</a>
+        <a class="text-sm font-semibold text-green-600 hover:text-green-700 transition-colors" href="#insurance">Insurance</a>
+      </nav>
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <!-- Dark mode -->
+        <button onclick="toggleDark()" title="Toggle dark mode"
+          class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 transition-colors">
+          <span class="material-symbols-outlined text-[20px]" data-dark-icon>dark_mode</span>
+        </button>
+        <button onclick="window.location.href='login.html'" class="hidden sm:block px-4 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-primary transition-colors">Login</button>
+        <button onclick="window.location.href='register.html'" class="hidden sm:block px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">Register</button>
+        <!-- Hamburger -->
+        <button id="menu-btn" onclick="openMobileMenu()" aria-label="Open menu" aria-expanded="false"
+          class="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 transition-colors">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- Hero Section -->
+<section class="relative py-16 lg:py-24 overflow-hidden" id="home">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="z-10 fade-up">
+        <span class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest uppercase bg-primary/10 text-primary rounded-full">Next-Gen Telemedicine</span>
+        <h1 class="text-5xl lg:text-7xl font-black leading-[1.1] mb-6 text-slate-900 dark:text-white">
+          Healthcare <span class="text-primary">Anytime</span>, Anywhere
+        </h1>
+        <p class="text-lg text-slate-600 dark:text-slate-400 mb-10 max-w-lg leading-relaxed">
+          Connect with specialized doctors instantly through encrypted video calls, secure chat, and unified digital healthcare services.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <button onclick="document.getElementById('book').scrollIntoView({behavior:'smooth'})"
+            class="px-8 py-4 bg-primary text-white rounded-xl font-bold shadow-xl shadow-primary/25 flex items-center gap-2 hover:scale-[1.02] transition-transform">
+            <span class="material-symbols-outlined">calendar_month</span> Book Consultation
+          </button>
+          <button onclick="document.getElementById('emg').scrollIntoView({behavior:'smooth'})"
+            class="px-8 py-4 bg-accent-red text-white rounded-xl font-bold shadow-xl shadow-accent-red/25 flex items-center gap-2 hover:scale-[1.02] transition-transform">
+            <span class="material-symbols-outlined">emergency_share</span> Emergency Help
+          </button>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="absolute -top-20 -right-20 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-20 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+        <div class="relative rounded-3xl overflow-hidden shadow-2xl bg-white p-2">
+          <!-- FIX: replaced local path with a real online image -->
+          <img alt="Telehealth Consultation — doctor on video call"
+            class="w-full h-[500px] object-cover rounded-2xl"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB9Wm0HjNB4PsHBFTKsHoJRo2huD2AC-ix5qwkyO23dgahbj9HNntgPTF4PSn_-FXlb8alDBAuWDq0LtogTo290c-1A4JF-Hc5aVdUwbiwRWFXH-vVaF_Ab9Qouo5m4WzxHldAmqU6QfcV9D6_oO9XsE_aMNvcccW2K9CfM-H8u_R5O-02Hnvm5OHiyyTvLBrnx7XAWESzPXyMN5z2qsbglkAdZLyPpn6W9ykaKkbxmsmzok399lHU0kLH8wmQcRqKyNTTBziXZYg5"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Feature Cards -->
+<section class="py-20 bg-slate-50 dark:bg-slate-900/50" id="feature">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-bold mb-4">Our Comprehensive Services</h2>
+      <p class="text-slate-500">Tailored healthcare solutions for your peace of mind</p>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <a href="call.html">
+        <div class="group p-8 bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 hover:border-primary/50 transition-all hover:shadow-xl">
+          <div class="w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+            <span class="material-symbols-outlined text-3xl">video_chat</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Online Consultation</h3>
+          <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-sm">Experience seamless video, voice, or encrypted chat sessions with medical experts from your home.</p>
+        </div>
+      </a>
+      <a href="health.html">
+        <div class="group p-8 bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 hover:border-primary/50 transition-all hover:shadow-xl">
+          <div class="w-14 h-14 bg-secondary/10 text-secondary rounded-2xl flex items-center justify-center mb-6 group-hover:bg-secondary group-hover:text-white transition-colors">
+            <span class="material-symbols-outlined text-3xl">folder_shared</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Health Records</h3>
+          <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-sm">Centralized management of your prescriptions, lab reports, and medical history in one secure dashboard.</p>
+        </div>
+      </a>
+      <a href="emg.html">
+        <div class="group p-8 bg-white dark:bg-slate-800 rounded-3xl border-2 border-accent-red/20 hover:border-accent-red transition-all hover:shadow-xl shadow-lg shadow-accent-red/5">
+          <div class="w-14 h-14 bg-accent-red/10 text-accent-red rounded-2xl flex items-center justify-center mb-6 group-hover:bg-accent-red group-hover:text-white transition-colors">
+            <span class="material-symbols-outlined text-3xl">ambulance</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-accent-red">Ambulance Alert</h3>
+          <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-sm">One-tap emergency ambulance request system with real-time location tracking for critical situations.</p>
+        </div>
+      </a>
+      <a href="id.html">
+        <div class="group p-8 bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 hover:border-primary/50 transition-all hover:shadow-xl">
+          <div class="w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+            <span class="material-symbols-outlined text-3xl">fingerprint</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Unique Patient ID</h3>
+          <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-sm">Your digital identity in the healthcare ecosystem. Access treatment anywhere using your unique ID.</p>
+        </div>
+      </a>
+      <a href="awer.html">
+        <div class="group p-8 bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 hover:border-primary/50 transition-all hover:shadow-xl">
+          <div class="w-14 h-14 bg-secondary/10 text-secondary rounded-2xl flex items-center justify-center mb-6 group-hover:bg-secondary group-hover:text-white transition-colors">
+            <span class="material-symbols-outlined text-3xl">menu_book</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Health Awareness</h3>
+          <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-sm">Stay informed with expert hygiene tips, preventive care guides, and updates on health schemes.</p>
+        </div>
+      </a>
+      <a href="blood.html">
+        <div class="group p-8 bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 hover:border-primary/50 transition-all hover:shadow-xl">
+          <div class="w-14 h-14 bg-accent-red/10 text-accent-red rounded-2xl flex items-center justify-center mb-6 group-hover:bg-accent-red group-hover:text-white transition-colors">
+            <span class="material-symbols-outlined text-3xl">bloodtype</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Blood Donor Finder</h3>
+          <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-sm">Integrated network to quickly find and connect with registered blood donors in your immediate vicinity.</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-20">
+      <h2 class="text-4xl font-black mb-4">How It Works</h2>
+      <p class="text-slate-500 text-lg">Three simple steps to your better health</p>
+    </div>
+    <div class="flex flex-col md:flex-row justify-between gap-12 relative">
+      <div class="flex-1 text-center relative z-10">
+        <div class="w-20 h-20 bg-primary text-white text-3xl font-bold flex items-center justify-center rounded-2xl mx-auto mb-8 shadow-xl shadow-primary/30">1</div>
+        <h3 class="text-2xl font-bold mb-4">Register / ID</h3>
+        <p class="text-slate-500 leading-relaxed">Create your account and generate your Unique Patient ID for lifelong records.</p>
+      </div>
+      <div class="hidden md:block absolute top-10 left-[20%] right-[20%] h-0.5 border-t-2 border-dashed border-slate-200 dark:border-slate-700 -z-0"></div>
+      <div class="flex-1 text-center relative z-10">
+        <div class="w-20 h-20 bg-secondary text-white text-3xl font-bold flex items-center justify-center rounded-2xl mx-auto mb-8 shadow-xl shadow-secondary/30">2</div>
+        <h3 class="text-2xl font-bold mb-4">Search / Connect</h3>
+        <p class="text-slate-500 leading-relaxed">Search for top-rated specialists by department and start a video consultation.</p>
+      </div>
+      <div class="flex-1 text-center relative z-10">
+        <div class="w-20 h-20 bg-slate-800 text-white text-3xl font-bold flex items-center justify-center rounded-2xl mx-auto mb-8 shadow-xl shadow-slate-800/30">3</div>
+        <h3 class="text-2xl font-bold mb-4">Consult / Records</h3>
+        <p class="text-slate-500 leading-relaxed">Receive your e-prescription and access follow-up records instantly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Doctors Section -->
+<section id="Doctorinf" class="py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+      <div>
+        <h2 class="text-4xl font-black mb-4">Expert Doctors</h2>
+        <p class="text-slate-500 text-lg">Consult with India's most trusted medical professionals</p>
+      </div>
+      <button onclick="window.location.href='call.html'" class="px-6 py-3 border-2 border-primary text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-all">View All Doctors</button>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 dark:border-slate-700">
+        <img alt="Dr. Rajesh Kumar — Cardiologist" class="w-full h-64 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxaBaHBUO91wHjfiepsiUXwsiUJqq57FJl4u-weY7mzhhqQAkfmSimSq74YpUHMV8NqLUxxYHzlh9GfsLIo5_0ufLDQaGsoOGNJPW9GU2NeUCnXhN6YM5fS2t7XOIN2ovtDrDAuWauf7gobx0lR8AGBgQB4nwBE_02r15ggG2zE3QCHehQImx2V1s-qLBHLG8UOPgwr3qXrUZLfzKpVnxvCNonOhnlBckwATMzet-0LpFh87bxyp-Zrh_XFjksMrBUhpTadMgnl0cA"/>
+        <div class="p-6">
+          <h4 class="text-xl font-bold mb-1">Dr. Rajesh Kumar</h4>
+          <p class="text-primary text-sm font-semibold mb-4 uppercase tracking-wider">Cardiologist</p>
+          <div class="flex items-center gap-2 mb-6 text-sm text-slate-500">
+            <span class="material-symbols-outlined text-secondary text-sm">verified</span> 12+ Years Experience
+          </div>
+          <button onclick="window.location.href='call.html'" class="w-full py-3 bg-slate-50 dark:bg-slate-700 hover:bg-primary hover:text-white text-slate-900 dark:text-white font-bold rounded-xl transition-all">Book Appointment</button>
+        </div>
+      </div>
+      <div class="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 dark:border-slate-700">
+        <img alt="Dr. Ananya Singh — Pediatrician" class="w-full h-64 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWgmShcCgeOPnGB8ltUy5t9dqKOh3JOR59FRYTooapg6XKTWsZ9Kvdpx_I19bXHW0TQFQKS6prdwWW1xdEKHm0QymEPa_VnT2wWxHjHESiodNv-TSe8Jk-E4RIQoDUXVNyPEb0AQ2F2i6Mn8h4Ty3GLpG2WLn-cZGCG2ySKgvp6FJxNBiCzN-KlXjuyuoMabPgKWTpR4bGoCuOtIC-EPXLxU1MM81tJKuTKM1A-zP8zLj_m4P_-ObmpIFyeL709zzy1jof76YiZGpj"/>
+        <div class="p-6">
+          <h4 class="text-xl font-bold mb-1">Dr. Ananya Singh</h4>
+          <p class="text-primary text-sm font-semibold mb-4 uppercase tracking-wider">Pediatrician</p>
+          <div class="flex items-center gap-2 mb-6 text-sm text-slate-500">
+            <span class="material-symbols-outlined text-secondary text-sm">verified</span> 8+ Years Experience
+          </div>
+          <button onclick="window.location.href='call.html'" class="w-full py-3 bg-slate-50 dark:bg-slate-700 hover:bg-primary hover:text-white text-slate-900 dark:text-white font-bold rounded-xl transition-all">Book Appointment</button>
+        </div>
+      </div>
+      <div class="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 dark:border-slate-700">
+        <img alt="Dr. Vikram Sethi — Neurologist" class="w-full h-64 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLZibAYTSG210jk20S1dBOoLf8jn4dBKPokac_Qd2oQZGwHt8vS0xlwddUQWKz_UUwAOSgWfxSI3mvlHcEl6vhr252vmSiwW2zPlsGHD2a7RNeE7AjcWerp4yzv5RtnulMrLk10SsngOEcnQdDgTy8TLlcGe7s9FjfK2v3gc2OFabHPkDvlicp8CVf5CR4eCM_CVyjWs9-U9CqTaRay8ePqfpzBEwIjcAVQr8kw1N0lLL7c590IsUuZenenqU38t948BYtN7JHmRfI"/>
+        <div class="p-6">
+          <h4 class="text-xl font-bold mb-1">Dr. Vikram Sethi</h4>
+          <p class="text-primary text-sm font-semibold mb-4 uppercase tracking-wider">Neurologist</p>
+          <div class="flex items-center gap-2 mb-6 text-sm text-slate-500">
+            <span class="material-symbols-outlined text-secondary text-sm">verified</span> 15+ Years Experience
+          </div>
+          <button onclick="window.location.href='call.html'" class="w-full py-3 bg-slate-50 dark:bg-slate-700 hover:bg-primary hover:text-white text-slate-900 dark:text-white font-bold rounded-xl transition-all">Book Appointment</button>
+        </div>
+      </div>
+      <div class="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 dark:border-slate-700">
+        <img alt="Dr. Sarah Moorthy — Dermatologist" class="w-full h-64 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyxXhzEf5Vg_uWZkOhCvtXBl4MqH6mpoKUoJYPZn0pRUn6MHmYMPdu2AA8KIQFoIFzc2PZeh02mCpc7V56HMFRow7EACnBaK4T7VyTwermjg3K7TpL2SEjv8Z8rz1UdCIwudzFuq_x4OWxnyNVPVpOXSZ4CHpBKRvCJRcNPL3yfz472HXEdtHuWsKgJZxb3rEqn_9_-jn1csF0cJh9hcShhca0BrEZjxq5jSal0DERJuRV3A6unfQUSRAC2Wa_YGrYgPpHjBT2enp6"/>
+        <div class="p-6">
+          <h4 class="text-xl font-bold mb-1">Dr. Sarah Moorthy</h4>
+          <p class="text-primary text-sm font-semibold mb-4 uppercase tracking-wider">Dermatologist</p>
+          <div class="flex items-center gap-2 mb-6 text-sm text-slate-500">
+            <span class="material-symbols-outlined text-secondary text-sm">verified</span> 10+ Years Experience
+          </div>
+          <button onclick="window.location.href='call.html'" class="w-full py-3 bg-slate-50 dark:bg-slate-700 hover:bg-primary hover:text-white text-slate-900 dark:text-white font-bold rounded-xl transition-all">Book Appointment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Health Awareness -->
+<section class="py-24" id="awareness">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-4 mb-16">
+      <h2 class="text-3xl font-bold">Health Awareness</h2>
+      <div class="flex-1 h-px bg-slate-200 dark:bg-slate-800"></div>
+    </div>
+    <div class="grid lg:grid-cols-2 gap-12">
+      <div class="bg-secondary/5 rounded-[40px] p-10 flex flex-col md:flex-row gap-8 items-center border border-secondary/10">
+        <div class="flex-1">
+          <span class="text-secondary font-bold text-xs tracking-tighter uppercase mb-4 block">Government Schemes</span>
+          <h3 class="text-2xl font-bold mb-4 leading-tight">PM-JAY Ayushman Bharat Coverage Guide</h3>
+          <p class="text-slate-500 mb-6 text-sm leading-relaxed">Understand how to avail cashless treatment up to ₹5 Lakhs using your health card at empanelled hospitals.</p>
+          <a href="awer.html" class="text-secondary font-bold flex items-center gap-2 hover:translate-x-1 transition-transform">
+            Learn More <span class="material-symbols-outlined">arrow_right_alt</span>
+          </a>
+        </div>
+        <div class="w-full md:w-48 h-48 bg-secondary/10 rounded-3xl flex items-center justify-center text-secondary">
+          <span class="material-symbols-outlined text-6xl">assured_workload</span>
+        </div>
+      </div>
+      <div class="bg-primary/5 rounded-[40px] p-10 flex flex-col md:flex-row gap-8 items-center border border-primary/10">
+        <div class="flex-1">
+          <span class="text-primary font-bold text-xs tracking-tighter uppercase mb-4 block">Daily Hygiene Tips</span>
+          <h3 class="text-2xl font-bold mb-4 leading-tight">Preventive Care: Modern Hygiene Practices</h3>
+          <p class="text-slate-500 mb-6 text-sm leading-relaxed">Expert-backed advice on seasonal disease prevention and maintaining a sterile environment at home.</p>
+          <a href="awer.html" class="text-primary font-bold flex items-center gap-2 hover:translate-x-1 transition-transform">
+            Read Guide <span class="material-symbols-outlined">arrow_right_alt</span>
+          </a>
+        </div>
+        <div class="w-full md:w-48 h-48 bg-primary/10 rounded-3xl flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined text-6xl">clean_hands</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Emergency Section -->
+<section class="py-20 bg-accent-red" id="emg">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-3 gap-12 text-white">
+      <div class="flex flex-col items-center text-center">
+        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-6">
+          <span class="material-symbols-outlined text-3xl">medical_information</span>
+        </div>
+        <h4 class="text-2xl font-bold mb-2">Hospital Directory</h4>
+        <p class="text-white/80 mb-4 text-sm">List of 24/7 multispecialty hospitals nearby</p>
+        <a class="text-3xl font-black hover:underline" href="tel:108">108</a>
+      </div>
+      <div class="flex flex-col items-center text-center">
+        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-6">
+          <span class="material-symbols-outlined text-3xl">emergency</span>
+        </div>
+        <h4 class="text-2xl font-bold mb-2">Ambulance Hub</h4>
+        <p class="text-white/80 mb-4 text-sm">Direct dispatch to your current GPS location</p>
+        <a href="emg.html" class="px-8 py-3 bg-white text-accent-red font-black rounded-xl hover:bg-slate-100 transition-colors">Call Rescue</a>
+      </div>
+      <div class="flex flex-col items-center text-center">
+        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-6">
+          <span class="material-symbols-outlined text-3xl">water_drop</span>
+        </div>
+        <h4 class="text-2xl font-bold mb-2">Blood Center</h4>
+        <p class="text-white/80 mb-4 text-sm">Emergency blood unit search &amp; donor matching</p>
+        <a href="blood.html" class="font-bold border-b-2 border-white/30 hover:border-white transition-all">Search Network</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-24 overflow-hidden relative" id="book">
+  <div class="absolute inset-0 bg-slate-900 -z-10"></div>
+  <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/20 to-transparent -z-10"></div>
+  <div class="max-w-5xl mx-auto px-4 text-center">
+    <h2 class="text-4xl lg:text-5xl font-black text-white mb-8">Your Health, Our Priority</h2>
+    <p class="text-xl text-slate-300 mb-12 max-w-2xl mx-auto">Join thousands of patients who trust Jivan for their family's healthcare needs. High-quality care is just a tap away.</p>
+    <!-- FIX: was a <button> with href which does nothing — now properly navigates -->
+    <button onclick="window.location.href='register.html'"
+      class="px-10 py-5 bg-primary text-white text-xl font-bold rounded-2xl shadow-2xl shadow-primary/40 hover:scale-105 transition-transform">
+      Book a Consultation Today
+    </button>
+  </div>
+</section>
+</main>
+
+<!-- Health News Section -->
+<section class="py-20 bg-slate-50 dark:bg-slate-900/50" id="news">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
+      <div>
+        <span class="inline-block px-3 py-1 text-xs font-bold tracking-widest uppercase bg-primary/10 text-primary rounded-full mb-3">Live Updates</span>
+        <h2 class="text-3xl font-black">Health News & Updates</h2>
+        <p class="text-slate-500 mt-1">Latest from India's medical community</p>
+      </div>
+      <a href="awer.html" class="text-primary font-bold flex items-center gap-1 hover:translate-x-1 transition-transform text-sm">All Articles <span class="material-symbols-outlined text-lg">arrow_forward</span></a>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="news-grid">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- Life Insurance Section -->
+<section class="py-20" id="insurance">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <span class="inline-block px-3 py-1 text-xs font-bold tracking-widest uppercase bg-green-100 text-green-700 rounded-full mb-3">Financial Health</span>
+      <h2 class="text-3xl font-black mb-3">Life Insurance Recommendations</h2>
+      <p class="text-slate-500 max-w-xl mx-auto">Protect your family's future. Our health platform partners with trusted insurers to bring you the best plans.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6 mb-10">
+      <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 group">
+        <div class="w-12 h-12 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-green-600 group-hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-2xl">shield</span>
+        </div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-xs font-black bg-green-50 text-green-700 px-2 py-0.5 rounded-full">TERM PLAN</span>
+          <span class="text-xs font-bold text-slate-400">Most Popular</span>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Jivan Shield Term Plan</h3>
+        <p class="text-slate-500 text-sm mb-4 leading-relaxed">Pure life cover at the lowest premium. Protect your family with ₹1 Crore cover starting at just ₹499/month.</p>
+        <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 mb-4 space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-slate-500">Sum Assured</span><span class="font-bold text-green-600">Up to ₹5 Cr</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Premium from</span><span class="font-bold">₹499/month</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Cover Period</span><span class="font-bold">10–40 years</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Tax Benefit</span><span class="font-bold text-green-600">Under 80C</span></div>
+        </div>
+        <button onclick="openInsurance('Jivan Shield Term Plan')" class="w-full py-3 bg-green-600 text-white rounded-xl font-bold text-sm hover:bg-green-700 transition-all">Get Free Quote</button>
+      </div>
+      <div class="bg-white dark:bg-slate-900 rounded-3xl border-2 border-primary p-6 shadow-xl relative hover:-translate-y-1 transition-all group">
+        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black tracking-widest px-4 py-1.5 rounded-full shadow-lg">RECOMMENDED</div>
+        <div class="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-2xl">health_and_safety</span>
+        </div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-xs font-black bg-primary/10 text-primary px-2 py-0.5 rounded-full">HEALTH + LIFE</span>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Jivan Suraksha Combo</h3>
+        <p class="text-slate-500 text-sm mb-4 leading-relaxed">Combined life + health insurance in one plan. Cover hospitalisation AND provide life protection for your family.</p>
+        <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 mb-4 space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-slate-500">Life Cover</span><span class="font-bold text-primary">₹50 Lakh</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Health Cover</span><span class="font-bold text-primary">₹10 Lakh/year</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Premium from</span><span class="font-bold">₹1,299/month</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Cashless Hospitals</span><span class="font-bold text-green-600">15,000+</span></div>
+        </div>
+        <button onclick="openInsurance('Jivan Suraksha Combo')" class="w-full py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary/90 transition-all shadow-lg">Get Free Quote</button>
+      </div>
+      <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 group">
+        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-2xl">savings</span>
+        </div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-xs font-black bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full">ULIP</span>
+          <span class="text-xs font-bold text-slate-400">Investment + Insurance</span>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Jivan Wealth + Life</h3>
+        <p class="text-slate-500 text-sm mb-4 leading-relaxed">Invest and get insured simultaneously. ULIP plan combining market-linked returns with comprehensive life cover.</p>
+        <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 mb-4 space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-slate-500">Min. Premium</span><span class="font-bold">₹2,000/month</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Life Cover</span><span class="font-bold text-purple-600">₹25 Lakh+</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Returns</span><span class="font-bold text-green-600">Market Linked</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Lock-in Period</span><span class="font-bold">5 years</span></div>
+        </div>
+        <button onclick="openInsurance('Jivan Wealth + Life ULIP')" class="w-full py-3 border-2 border-purple-600 text-purple-600 rounded-xl font-bold text-sm hover:bg-purple-600 hover:text-white transition-all">Explore Plan</button>
+      </div>
+    </div>
+    <div class="bg-gradient-to-r from-green-600 to-primary rounded-3xl p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <h3 class="text-2xl font-black mb-2">🛡️ Not sure which plan is right for you?</h3>
+        <p class="text-white/80">Our AI advisor analyses your health profile and recommends the best insurance coverage for you and your family.</p>
+      </div>
+      <button onclick="openInsurance('AI Advisor')" class="bg-white text-green-700 px-8 py-4 rounded-xl font-black whitespace-nowrap hover:scale-105 transition-transform shadow-xl">
+        Get AI Recommendation
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Insurance Modal -->
+<div id="insurance-modal" class="fixed inset-0 bg-black/60 z-[9999] hidden items-center justify-center p-4" onclick="if(event.target===this)this.classList.add('hidden')">
+  <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+    <h3 class="text-xl font-black mb-2" id="ins-modal-title">Get a Free Quote</h3>
+    <p class="text-slate-500 text-sm mb-5">Fill your details and our insurance expert will contact you within 24 hours.</p>
+    <div class="space-y-3">
+      <input id="ins-name" type="text" placeholder="Full Name" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-primary"/>
+      <input id="ins-phone" type="tel" placeholder="Mobile Number" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-primary"/>
+      <input id="ins-age" type="number" placeholder="Age" min="18" max="75" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-primary"/>
+      <select id="ins-cover" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-primary">
+        <option value="">Coverage needed</option>
+        <option>₹25 Lakh</option><option>₹50 Lakh</option><option>₹1 Crore</option><option>₹2 Crore+</option>
+      </select>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="document.getElementById('insurance-modal').classList.add('hidden')" class="flex-1 py-3 border-2 border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm">Cancel</button>
+      <button onclick="submitInsurance()" class="flex-1 py-3 bg-green-600 text-white rounded-xl font-bold text-sm hover:bg-green-700">Submit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-white dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 pt-20 pb-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+      <div class="col-span-2 lg:col-span-1">
+        <div class="flex items-center gap-2 mb-6">
+          <div class="bg-primary p-1.5 rounded text-white"><span class="material-symbols-outlined text-xl">medical_services</span></div>
+          <span class="text-lg font-bold">Jivan TeleHealth</span>
+        </div>
+        <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-8 max-w-xs">The ultimate digital health bridge connecting you with world-class medical expertise anytime, anywhere.</p>
+        <div class="flex gap-4">
+          <a class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+          <a class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-primary transition-colors" href="/cdn-cgi/l/email-protection#c1a2aeafb5a0a2b581aba8b7a0afa2aeafafa4a2b5efa2aeac"><span class="material-symbols-outlined">mail</span></a>
+          <a class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">forum</span></a>
+        </div>
+      </div>
+      <div>
+        <h5 class="font-bold mb-6">Quick Links</h5>
+        <ul class="space-y-4 text-sm text-slate-500 dark:text-slate-400">
+          <li><a class="hover:text-primary" href="#home">Home</a></li>
+          <li><a class="hover:text-primary" href="call.html">Find Doctors</a></li>
+          <li><a class="hover:text-primary" href="call.html">Book Consultation</a></li>
+          <li><a class="hover:text-primary" href="awer.html">Health Schemes</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5 class="font-bold mb-6">Services</h5>
+        <ul class="space-y-4 text-sm text-slate-500 dark:text-slate-400">
+          <li><a class="hover:text-primary" href="call.html">Online Video Call</a></li>
+          <li><a class="hover:text-primary" href="health.html">Medical Records</a></li>
+          <li><a class="hover:text-primary" href="emg.html">Emergency Rescue</a></li>
+          <li><a class="hover:text-primary" href="blood.html">Blood Donor Network</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5 class="font-bold mb-6">Contact Us</h5>
+        <ul class="space-y-4 text-sm text-slate-500 dark:text-slate-400">
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary">call</span> +91 1800-JIVAN-01</li>
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary">mail</span> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4c2f2322382d2f380c26253a2d222f232222292f38622f2321">[email&#160;protected]</a></li>
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary">location_on</span> Health City, Bengaluru, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pt-8 border-t border-slate-100 dark:border-slate-800 text-center text-slate-400 text-xs">
+      <!-- FIX: updated year to 2026 -->
+      <p>© 2026 Jivan TeleHealth. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast Container (injected by JS) -->
+<div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
+
+<script>
+/* ---- Dark Mode ---- */
+function toggleDark() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('jivan-dark', isDark);
+  document.querySelectorAll('[data-dark-icon]').forEach(el => {
+    el.textContent = isDark ? 'light_mode' : 'dark_mode';
+  });
+}
+// Sync icon after page load
+document.addEventListener('DOMContentLoaded', () => {
+  const isDark = document.documentElement.classList.contains('dark');
+  document.querySelectorAll('[data-dark-icon]').forEach(el => {
+    el.textContent = isDark ? 'light_mode' : 'dark_mode';
+  });
+});
+
+/* ---- Mobile Menu ---- */
+function openMobileMenu() {
+  document.getElementById('mobile-drawer').classList.replace('-translate-x-full','translate-x-0');
+  document.getElementById('menu-overlay').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobileMenu() {
+  document.getElementById('mobile-drawer').classList.replace('translate-x-0','-translate-x-full');
+  document.getElementById('menu-overlay').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+/* ---- Toast ---- */
+function showToast(message, type = 'success', duration = 3500) {
+  const icons = { success:'check_circle', error:'error', info:'info', warning:'warning' };
+  const colors = { success:'bg-green-600', error:'bg-red-600', info:'bg-sky-600', warning:'bg-amber-500' };
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `pointer-events-auto flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl font-semibold text-sm text-white max-w-sm transition-all duration-300 translate-y-4 opacity-0 ${colors[type]}`;
+  toast.innerHTML = `<span class="material-symbols-outlined text-xl">${icons[type]}</span><span>${escHtml(message)}</span>`;
+  container.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.remove('translate-y-4','opacity-0'));
+  setTimeout(() => { toast.classList.add('translate-y-4','opacity-0'); setTimeout(() => toast.remove(), 350); }, duration);
+}
+
+/* Security: XSS-safe HTML escape */
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ---- News Section ---- */
+const newsData = [
+  { cat:'Policy', icon:'assured_workload', color:'text-secondary', bg:'bg-secondary/10', title:'ABDM Digital Health Cards: 50 Crore Indians Now Enrolled', desc:'The Ayushman Bharat Digital Mission surpasses 50 crore health ID registrations, enabling seamless data sharing across hospitals.', time:'2 hours ago', source:'Health Ministry' },
+  { cat:'Research', icon:'biotech', color:'text-primary', bg:'bg-primary/10', title:'ICMR Study: Telemedicine Reduces Rural Doctor Visits by 40%', desc:'A landmark ICMR study confirms telehealth consultations have significantly reduced burden on rural primary health centres.', time:'1 day ago', source:'ICMR Report' },
+  { cat:'Alert', icon:'warning', color:'text-amber-600', bg:'bg-amber-50', title:'Seasonal Dengue Advisory: Maharashtra Issues High Alert', desc:'BMC urges residents to eliminate stagnant water after dengue cases spike 22% ahead of monsoon season in Pune and Mumbai.', time:'3 hours ago', source:'BMC Health Dept' },
+  { cat:'Innovation', icon:'smart_toy', color:'text-purple-600', bg:'bg-purple-50', title:'AI Detects Diabetic Retinopathy with 95% Accuracy in Trials', desc:'An AI diagnostic tool developed by IIT Madras achieves near-specialist accuracy in eye screenings for rural health camps.', time:'2 days ago', source:'IIT Madras' },
+  { cat:'Insurance', icon:'shield', color:'text-green-600', bg:'bg-green-50', title:'PM-JAY Extends Coverage: Mental Health Included from April 2026', desc:'Ayushman Bharat now covers psychiatric consultations and inpatient mental health treatment under its ₹5 Lakh annual cover.', time:'5 hours ago', source:'NHA' },
+  { cat:'Tips', icon:'self_improvement', color:'text-rose-600', bg:'bg-rose-50', title:'WHO: 5 Simple Habits That Add 10 Years to Your Life', desc:'The latest WHO Healthy Ageing report identifies sleep hygiene, Mediterranean diet, and daily 30-min walks as top longevity factors.', time:'1 day ago', source:'WHO Report' },
+];
+const newsFullContent = [
+  {
+    cat: 'Policy', title: 'ABDM Digital Health Cards: 50 Crore Indians Now Enrolled', source: 'Health Ministry · Today',
+    body: `<p>The Ayushman Bharat Digital Mission (ABDM) has crossed a landmark milestone — <strong>50 crore Ayushman Bharat Health Account (ABHA) registrations</strong>.</p>
+    <p>The ABHA ID is a 14-digit unique health identifier that stores all your medical records digitally. With your consent, doctors and hospitals across India can instantly access your prescriptions, lab reports, and discharge summaries.</p>
+    <h3 style="font-size:1rem;font-weight:700;margin:1rem 0 .5rem;">How to Get Your Free ABHA ID</h3>
+    <ol style="padding-left:1.25rem;">
+      <li style="margin-bottom:.4rem;">Visit <a href="https://healthid.ndhm.gov.in" target="_blank" rel="noopener" style="color:#0ea5e9;font-weight:700;">healthid.ndhm.gov.in</a> or download the ABHA app</li>
+      <li style="margin-bottom:.4rem;">Register with your Aadhaar or driving licence — takes under 2 minutes</li>
+      <li style="margin-bottom:.4rem;">Download your ABHA health card</li>
+    </ol>
+    <p>Registration is <strong>completely free</strong>. All your health records across Jivan TeleHealth are already linked to your profile.</p>`
+  },
+  {
+    cat: 'Research', title: 'ICMR Study: Telemedicine Reduces Rural Doctor Visits by 40%', source: 'ICMR Report · 1 day ago',
+    body: `<p>A landmark study by the Indian Council of Medical Research (ICMR) confirms that telemedicine consultations have reduced the burden on rural primary health centres by <strong>40%</strong> over the past two years.</p>
+    <p>The study, conducted across 12 states, found that patients using teleconsultation platforms required <strong>fewer repeat visits</strong>, received faster diagnoses, and reported higher satisfaction scores compared to in-person visits for conditions like hypertension management, diabetes follow-ups, and skin conditions.</p>
+    <h3 style="font-size:1rem;font-weight:700;margin:1rem 0 .5rem;">Key Findings</h3>
+    <ul style="padding-left:1.25rem;">
+      <li style="margin-bottom:.4rem;">Teleconsultation saves patients an average of ₹850 in travel and indirect costs per visit</li>
+      <li style="margin-bottom:.4rem;">Prescription accuracy was equivalent to in-person for non-emergency conditions</li>
+      <li style="margin-bottom:.4rem;">Patient adherence to medication improved by 28% when followed up digitally</li>
+    </ul>
+    <p>Jivan TeleHealth is part of this digital healthcare revolution — <a href="call.html" style="color:#0ea5e9;font-weight:700;">consult a specialist now →</a></p>`
+  },
+  {
+    cat: 'Alert', title: 'Seasonal Dengue Advisory: Maharashtra Issues High Alert', source: 'BMC Health Dept · 3 hours ago',
+    body: `<p>The Brihanmumbai Municipal Corporation (BMC) has issued a <strong>high dengue alert</strong> after cases spiked 22% in the past week across Pune and Mumbai ahead of the monsoon season.</p>
+    <h3 style="font-size:1rem;font-weight:700;margin:1rem 0 .5rem;">What You Must Do Now</h3>
+    <ul style="padding-left:1.25rem;">
+      <li style="margin-bottom:.5rem;"><strong>Remove stagnant water</strong> — empty coolers, flower pots, tyres, and drains every 3 days</li>
+      <li style="margin-bottom:.5rem;"><strong>Wear full-sleeve clothing</strong> during dawn and dusk when Aedes mosquitoes are most active</li>
+      <li style="margin-bottom:.5rem;"><strong>Use mosquito repellent</strong> and nets — especially for children</li>
+      <li style="margin-bottom:.5rem;"><strong>Seek immediate testing</strong> if you have fever + headache + body pain lasting over 2 days</li>
+    </ul>
+    <div style="background:#fff7ed;border-left:4px solid #f97316;padding:.75rem 1rem;border-radius:0 .75rem .75rem 0;margin:1rem 0;">
+      <p style="margin:0;color:#c2410c;font-size:.875rem;">⚠️ Do NOT take Aspirin or Ibuprofen if you suspect dengue — they increase bleeding risk. Use only Paracetamol and consult a doctor.</p>
+    </div>
+    <p>Book a teleconsultation if you or a family member has fever: <a href="call.html" style="color:#0ea5e9;font-weight:700;">Consult now →</a></p>`
+  },
+  {
+    cat: 'Innovation', title: 'AI Detects Diabetic Retinopathy with 95% Accuracy', source: 'IIT Madras · 2 days ago',
+    body: `<p>An AI-powered diagnostic tool developed by IIT Madras has achieved <strong>95.3% accuracy</strong> in detecting diabetic retinopathy (DR) from retinal photographs — matching the performance of specialist ophthalmologists.</p>
+    <p>The tool was tested at 14 rural health camps across Tamil Nadu and Andhra Pradesh, successfully screening over 3,400 patients who had no access to an eye specialist.</p>
+    <h3 style="font-size:1rem;font-weight:700;margin:1rem 0 .5rem;">Why This Matters</h3>
+    <p>Diabetic retinopathy is the leading cause of preventable blindness in India, affecting an estimated <strong>18–20% of diabetics</strong>. Early detection and laser treatment prevents blindness in over 90% of cases — but most patients in rural areas never get screened.</p>
+    <h3 style="font-size:1rem;font-weight:700;margin:1rem 0 .5rem;">What Diabetics Should Do</h3>
+    <ul style="padding-left:1.25rem;">
+      <li style="margin-bottom:.4rem;">Get a dilated eye exam every year if you have Type 1 or Type 2 diabetes</li>
+      <li style="margin-bottom:.4rem;">Keep blood sugar and blood pressure well controlled</li>
+      <li style="margin-bottom:.4rem;">Report any vision changes to your doctor immediately</li>
+    </ul>`
+  },
+  {
+    cat: 'Insurance', title: 'PM-JAY Extends Coverage: Mental Health Included from April 2026', source: 'NHA · 5 hours ago',
+    body: `<p>In a historic expansion, the National Health Authority (NHA) has announced that <strong>psychiatric consultations and inpatient mental health treatment</strong> are now covered under PM-JAY's ₹5 Lakh annual health cover, effective April 2026.</p>
+    <h3 style="font-size:1rem;font-weight:700;margin:1rem 0 .5rem;">What is Now Covered</h3>
+    <ul style="padding-left:1.25rem;">
+      <li style="margin-bottom:.4rem;">Inpatient psychiatry admissions (depression, schizophrenia, bipolar disorder)</li>
+      <li style="margin-bottom:.4rem;">Electroconvulsive Therapy (ECT)</li>
+      <li style="margin-bottom:.4rem;">Substance use disorder treatment</li>
+      <li style="margin-bottom:.4rem;">Crisis stabilisation admissions</li>
+    </ul>
+    <div style="background:#f0fdf4;border-left:4px solid #22c55e;padding:.75rem 1rem;border-radius:0 .75rem .75rem 0;margin:1rem 0;">
+      <p style="margin:0;color:#15803d;font-size:.875rem;">✅ This follows the Mental Healthcare Act 2017 mandate that mental illness must be treated on par with physical illness under government health schemes.</p>
+    </div>
+    <p>If you or someone you know needs mental health support, you can book a consultation with a Jivan psychiatrist: <a href="call.html" style="color:#0ea5e9;font-weight:700;">Book now →</a></p>`
+  },
+  {
+    cat: 'Tips', title: 'WHO: 5 Simple Habits That Add 10 Years to Your Life', source: 'WHO Report · 1 day ago',
+    body: `<p>The latest WHO Healthy Ageing report identifies five evidence-based lifestyle habits that together are associated with living <strong>10–14 years longer</strong> in good health.</p>
+    <ol style="padding-left:1.25rem;">
+      <li style="margin-bottom:.75rem;"><strong>Sleep 7–9 hours nightly:</strong> Poor sleep is linked to shorter lifespan, higher cancer risk, and poor immune function. Prioritise sleep above all other "optimisations".</li>
+      <li style="margin-bottom:.75rem;"><strong>Follow a Mediterranean/traditional diet:</strong> High in vegetables, legumes, whole grains, olive oil/mustard oil, fish. Associated with 25% lower cardiovascular mortality.</li>
+      <li style="margin-bottom:.75rem;"><strong>Walk 30 minutes daily:</strong> Even brisk walking 30 minutes/day reduces all-cause mortality by 35%. No gym required.</li>
+      <li style="margin-bottom:.75rem;"><strong>Don't smoke:</strong> Smoking removes an average of 10 years from life expectancy. Quitting at any age has measurable benefits within weeks.</li>
+      <li style="margin-bottom:.75rem;"><strong>Maintain social connections:</strong> Loneliness is equivalent to smoking 15 cigarettes a day in terms of health impact. Prioritise meaningful relationships.</li>
+    </ol>
+    <p>The report emphasises that these habits work <strong>synergistically</strong> — doing all five is significantly more powerful than doing one or two.</p>
+    <p>For personalised health advice, book a wellness consultation: <a href="call.html" style="color:#0ea5e9;font-weight:700;">Consult a doctor →</a></p>`
+  }
+];
+
+function openNewsModal(idx) {
+  const n = newsFullContent[idx];
+  if (!n) return;
+  document.getElementById('nm-cat').textContent   = n.cat;
+  document.getElementById('nm-title').textContent = n.title;
+  document.getElementById('nm-meta').textContent  = n.source;
+  document.getElementById('nm-body').innerHTML    = n.body;
+  const modal = document.getElementById('news-modal');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeNewsModal() {
+  document.getElementById('news-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeNewsModal(); } });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('news-grid');
+  if (!grid) return;
+  grid.innerHTML = newsData.map(n => `
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm hover:shadow-lg transition-all hover:-translate-y-0.5 cursor-pointer group" onclick="openNewsModal(${newsData.indexOf(n)})">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-9 h-9 ${n.bg} ${n.color} rounded-xl flex items-center justify-center">
+          <span class="material-symbols-outlined text-lg">${n.icon}</span>
+        </div>
+        <span class="text-xs font-bold px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-full">${n.cat}</span>
+        <span class="text-xs text-slate-400 ml-auto">${n.time}</span>
+      </div>
+      <h4 class="font-bold text-slate-900 dark:text-white mb-2 text-sm leading-snug group-hover:text-primary transition-colors">${n.title}</h4>
+      <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">${n.desc}</p>
+      <p class="text-xs text-slate-400 mt-3 font-semibold">📰 ${n.source}</p>
+    </div>
+  `).join('');
+});
+
+/* ---- Life Insurance ---- */
+function openInsurance(plan) {
+  document.getElementById('ins-modal-title').textContent = plan === 'AI Advisor' ? 'Get AI Insurance Recommendation' : `Get Free Quote — ${plan}`;
+  const modal = document.getElementById('insurance-modal');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+function submitInsurance() {
+  const name = document.getElementById('ins-name').value.trim();
+  const phone = document.getElementById('ins-phone').value.trim();
+  if (!name || !phone) { showToast('Please fill Name and Phone number','error'); return; }
+  document.getElementById('insurance-modal').classList.add('hidden');
+  document.getElementById('insurance-modal').classList.remove('flex');
+  showToast(`Thank you ${escHtml(name)}! Our insurance advisor will call you within 24 hours. 🛡️`,'success',5000);
+  ['ins-name','ins-phone','ins-age'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('ins-cover').value = '';
+}
+
+/* ========================================
+   CHATBOT WITH VOICE ASSISTANT — FIXED
+   ======================================== */
+let chatOpen = false;
+let chatGreeted = false;    // track greeting so it doesn't repeat on reopen
+let isListening = false;
+let recognition = null;
+let voiceTimeout = null;
+
+const chatResponses = {
+  greet:       ['Hello! 👋 I\'m <strong>Jivan AI</strong>, your health assistant.<br/>You can <strong>type</strong> or tap 🎤 to speak to me!'],
+  appointment: ['To book an appointment, visit <a href="call.html" class="underline font-bold text-primary">Find Doctors</a> — filter by specialty and book a slot instantly!'],
+  emergency:   ['🚨 <strong>Emergency?</strong> Call <a href="tel:108" class="underline font-bold text-red-400">108</a> immediately, or use our <a href="emg.html" class="underline font-bold text-red-400">Emergency page</a> to dispatch an ambulance.'],
+  records:     ['Your health records are on the <a href="health.html" class="underline font-bold text-primary">Health Records page</a>. Login first to see prescriptions, lab reports and history.'],
+  insurance:   ['We offer life insurance from ₹499/month! Scroll down on this page to our <strong>Insurance section</strong> and get a free quote in seconds.'],
+  blood:       ['Need blood urgently? Our <a href="blood.html" class="underline font-bold text-red-400">Blood Donor Finder</a> lets you search by blood group and city right now.'],
+  login:       ['To login, click the <a href="login.html" class="underline font-bold text-primary">Login button</a> in the top navigation. Demo: aryan@demo.com / patient123'],
+  news:        ['Check our <strong>Health News</strong> section below for the latest updates from India\'s medical community!'],
+  default:     ['I can help with <strong>appointments</strong>, <strong>health records</strong>, <strong>emergency</strong>, <strong>insurance</strong>, or <strong>blood donors</strong>. What do you need?']
+};
+
+function getChatReply(msg) {
+  const m = msg.toLowerCase();
+  if (/^(hi|hello|hey|namaste|helo|hai)/.test(m)) return chatResponses.greet;
+  if (/appoint|book|consult|doctor|specialist/.test(m)) return chatResponses.appointment;
+  if (/emerg|ambulance|urgent|108|accident|sos/.test(m)) return chatResponses.emergency;
+  if (/record|prescription|report|history|lab/.test(m)) return chatResponses.records;
+  if (/insur|cover|policy|protect|life/.test(m)) return chatResponses.insurance;
+  if (/blood|donor|donate/.test(m)) return chatResponses.blood;
+  if (/login|sign|register|account/.test(m)) return chatResponses.login;
+  if (/news|update|latest/.test(m)) return chatResponses.news;
+  return chatResponses.default;
+}
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  const box = document.getElementById('chatbox');
+  if (chatOpen) {
+    box.classList.remove('hidden');
+    box.classList.add('flex');
+    // Only greet once per page load
+    if (!chatGreeted) {
+      chatGreeted = true;
+      setTimeout(() => addBotMsg(chatResponses.greet[0]), 200);
+    }
+    // Focus input
+    setTimeout(() => { const inp = document.getElementById('chat-input'); if(inp) inp.focus(); }, 300);
+  } else {
+    box.classList.add('hidden');
+    box.classList.remove('flex');
+    // Stop listening if chat is closed
+    if (isListening && recognition) recognition.stop();
+  }
+}
+
+function addBotMsg(html) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'flex gap-2 mb-3';
+  div.innerHTML = `<div class="w-7 h-7 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5 select-none">AI</div><div class="bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-2xl rounded-tl-none px-4 py-2.5 text-sm max-w-[85%] leading-relaxed">${html}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addUserMsg(text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'flex gap-2 mb-3 justify-end';
+  div.innerHTML = `<div class="bg-primary text-white rounded-2xl rounded-tr-none px-4 py-2.5 text-sm max-w-[85%]">${escHtml(text)}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function sendChat(msgOverride) {
+  const input = document.getElementById('chat-input');
+  const msg = (msgOverride !== undefined ? msgOverride : input.value).trim();
+  if (!msg) return;
+  input.value = '';
+  addUserMsg(msg);
+  // Typing indicator
+  const msgs = document.getElementById('chat-messages');
+  const typing = document.createElement('div');
+  typing.id = 'typing-indicator';
+  typing.className = 'flex gap-2 mb-3';
+  typing.innerHTML = '<div class="w-7 h-7 bg-primary/30 rounded-full shrink-0 mt-0.5"></div><div class="bg-slate-100 dark:bg-slate-700 rounded-2xl px-4 py-3 text-sm"><span class="inline-flex gap-1"><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay:0ms"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay:150ms"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay:300ms"></span></span></div>';
+  msgs.appendChild(typing);
+  msgs.scrollTop = msgs.scrollHeight;
+  setTimeout(() => {
+    const t = document.getElementById('typing-indicator');
+    if (t) t.remove();
+    const replies = getChatReply(msg);
+    const reply = replies[Math.floor(Math.random() * replies.length)];
+    addBotMsg(reply);
+  }, 700);
+}
+
+/* ---- Voice Assistant (robust implementation) ---- */
+function setVoiceBtnState(listening) {
+  const btn = document.getElementById('voice-btn');
+  const icon = document.getElementById('voice-icon');
+  if (!btn) return;
+  if (listening) {
+    btn.classList.add('bg-red-100','text-red-500');
+    btn.classList.remove('bg-slate-100','dark:bg-slate-800','text-slate-500');
+    if (icon) icon.textContent = 'mic_off';
+    btn.title = 'Stop listening';
+  } else {
+    btn.classList.remove('bg-red-100','text-red-500');
+    btn.classList.add('bg-slate-100','dark:bg-slate-800','text-slate-500');
+    if (icon) icon.textContent = 'mic';
+    btn.title = 'Tap to speak';
+  }
+}
+
+function startVoice() {
+  // If already listening, stop it
+  if (isListening) {
+    if (recognition) { try { recognition.stop(); } catch(e){} }
+    isListening = false;
+    setVoiceBtnState(false);
+    if (voiceTimeout) { clearTimeout(voiceTimeout); voiceTimeout = null; }
+    return;
+  }
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    showToast('Voice input needs Chrome or Edge browser.', 'warning', 4000);
+    return;
+  }
+
+  // Open chat if closed
+  if (!chatOpen) toggleChat();
+
+  recognition = new SR();
+  // Use broad language for reliability — en-US works in all browsers
+  recognition.lang = 'en-US';
+  recognition.interimResults = true;
+  recognition.continuous = false;
+  recognition.maxAlternatives = 1;
+
+  isListening = true;
+  setVoiceBtnState(true);
+  showToast('🎤 Listening… speak clearly', 'info', 2000);
+
+  let finalTranscript = '';
+
+  recognition.onresult = (event) => {
+    let interim = '';
+    finalTranscript = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const t = event.results[i][0].transcript;
+      if (event.results[i].isFinal) finalTranscript += t;
+      else interim += t;
+    }
+    // Show interim in input box
+    const input = document.getElementById('chat-input');
+    if (input) input.value = finalTranscript || interim;
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    setVoiceBtnState(false);
+    if (voiceTimeout) { clearTimeout(voiceTimeout); voiceTimeout = null; }
+    // Only send if we got a final result
+    if (finalTranscript.trim()) {
+      const input = document.getElementById('chat-input');
+      if (input) input.value = finalTranscript.trim();
+      sendChat(finalTranscript.trim());
+    }
+  };
+
+  recognition.onerror = (event) => {
+    isListening = false;
+    setVoiceBtnState(false);
+    if (voiceTimeout) { clearTimeout(voiceTimeout); voiceTimeout = null; }
+    const msgs = {
+      'no-speech':         'No speech detected. Please try again.',
+      'audio-capture':     'Microphone not found. Check permissions.',
+      'not-allowed':       'Microphone access denied. Please allow it in browser settings.',
+      'network':           'Network error during voice recognition.',
+      'aborted':           ''  // user stopped — no toast needed
+    };
+    const msg = msgs[event.error];
+    if (msg) showToast(msg, 'error', 4000);
+  };
+
+  // Auto-stop after 8 seconds as safety net
+  voiceTimeout = setTimeout(() => {
+    if (isListening && recognition) {
+      try { recognition.stop(); } catch(e) {}
+    }
+  }, 8000);
+
+  try {
+    recognition.start();
+  } catch(e) {
+    isListening = false;
+    setVoiceBtnState(false);
+    showToast('Could not start voice. Please try again.', 'error');
+  }
+}
+</script>
+
+<div>
+          <p class="text-white font-bold text-sm">Jivan AI Assistant</p>
+          <p class="text-white/70 text-xs flex items-center gap-1"><span class="w-1.5 h-1.5 bg-green-400 rounded-full inline-block"></span> Online · Voice enabled</p>
+        </div>
+      </div>
+      <button onclick="toggleChat()" class="text-white/80 hover:text-white p-1"><span class="material-symbols-outlined text-xl">close</span></button>
+    </div>
+    <!-- Messages -->
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-4" style="min-height:200px;max-height:320px;"></div>
+    <!-- Quick replies -->
+    <div class="px-4 pb-2 flex gap-2 flex-wrap">
+      <button onclick="sendChat('Book a doctor')" class="text-xs px-3 py-1.5 bg-primary/10 text-primary rounded-full font-semibold hover:bg-primary hover:text-white transition-all">📅 Book Doctor</button>
+      <button onclick="sendChat('Emergency help')" class="text-xs px-3 py-1.5 bg-red-50 text-red-500 rounded-full font-semibold hover:bg-red-500 hover:text-white transition-all">🚨 Emergency</button>
+      <button onclick="sendChat('Insurance plans')" class="text-xs px-3 py-1.5 bg-green-50 text-green-600 rounded-full font-semibold hover:bg-green-600 hover:text-white transition-all">🛡️ Insurance</button>
+    </div>
+    <!-- Input -->
+    <div class="px-4 pb-4 flex gap-2 border-t border-slate-100 dark:border-slate-800 pt-3">
+      <input id="chat-input" type="text" placeholder="Type or use voice..." 
+        class="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-primary border-none"
+        onkeydown="if(event.key==='Enter')sendChat()"/>
+      <button id="voice-btn" onclick="startVoice()" title="Tap to speak" class="p-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 hover:text-primary hover:bg-primary/10 transition-all">
+        <span class="material-symbols-outlined text-xl" id="voice-icon">mic</span>
+      </button>
+      <button onclick="sendChat()" class="p-2.5 bg-primary rounded-xl text-white hover:bg-primary/90 transition-all">
+        <span class="material-symbols-outlined text-xl">send</span>
+      </button>
+    </div>
+  </div>
+  <!-- Toggle Button -->
+  <button onclick="toggleChat()" class="w-14 h-14 bg-primary rounded-full shadow-2xl shadow-primary/40 flex items-center justify-center text-white hover:scale-110 transition-transform relative">
+    <span class="material-symbols-outlined text-2xl">smart_toy</span>
+    <span class="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></span>
+  </button>
+</div>-e 
+
+
+<!-- News Detail Modal -->
+<div id="news-modal" onclick="if(event.target===this)closeNewsModal()" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(0,0,0,.55);overflow-y:auto;padding:1.5rem 1rem;align-items:flex-start;justify-content:center;">
+  <div style="background:white;border-radius:1.5rem;max-width:680px;width:100%;box-shadow:0 30px 60px rgba(0,0,0,.25);overflow:hidden;margin:auto;" id="news-modal-box" class="dark:bg-slate-900">
+    <div id="nm-header" style="padding:1.25rem 1.5rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;background:#0ea5e9;">
+      <div>
+        <span id="nm-cat" style="font-size:.7rem;font-weight:800;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:.25rem;"></span>
+        <h2 id="nm-title" style="color:white;font-size:1.1rem;font-weight:900;line-height:1.3;margin:0;"></h2>
+        <p id="nm-meta" style="color:rgba(255,255,255,.65);font-size:.7rem;margin-top:.3rem;"></p>
+      </div>
+      <button onclick="closeNewsModal()" style="background:rgba(255,255,255,.2);border:none;border-radius:.6rem;padding:.35rem .6rem;color:white;cursor:pointer;font-size:1rem;flex-shrink:0;">✕</button>
+    </div>
+    <div id="nm-body" style="padding:1.5rem;overflow-y:auto;max-height:70vh;font-size:.875rem;line-height:1.75;color:#475569;" class="dark:text-slate-400"></div>
+    <div style="padding:1rem 1.5rem;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;" class="dark:border-slate-700">
+      <span style="font-size:.75rem;color:#94a3b8;">Jivan TeleHealth — Health News</span>
+      <div style="display:flex;gap:.5rem;">
+        <button onclick="closeNewsModal()" style="padding:.5rem 1rem;background:#f1f5f9;border:none;border-radius:.75rem;font-size:.8rem;font-weight:700;cursor:pointer;color:#475569;" class="dark:bg-slate-700 dark:text-slate-300">Close</button>
+        <a href="awer.html" style="padding:.5rem 1rem;background:#0ea5e9;color:white;border-radius:.75rem;font-size:.8rem;font-weight:700;text-decoration:none;">Read More Articles →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="chatbot-voice.js"></script>
+<script src="nav-auth.js"></script>
+</body>
+</html>

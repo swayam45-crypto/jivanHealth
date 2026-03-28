@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-Content-Type-Options" content="nosniff"/>
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN"/>
+<meta name="referrer" content="strict-origin-when-cross-origin"/>
+<script>
+(function(){var s=localStorage.getItem('jivan-dark');var p=window.matchMedia('(prefers-color-scheme:dark)').matches;if(s!==null?s==='true':p)document.documentElement.classList.add('dark');})();
+</script>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Blood Donor Finder — Jivan TeleHealth</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩸</text></svg>"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="jivan-backend.js"></script>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#0ea5e9","secondary":"#14b8a6","accent-red":"#ef4444","background-light":"#f8fafc","background-dark":"#0f172a"},fontFamily:{"display":["Public Sans","sans-serif"]}}}}</script>
+<style>body{font-family:'Public Sans',sans-serif;}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}#mobile-drawer{transition:transform 0.3s ease;}.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center;}.modal-bg.open{display:flex;}</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+
+<div id="menu-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" onclick="MobileMenu.close()"></div>
+<div id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 bg-white dark:bg-slate-900 z-50 shadow-2xl -translate-x-full flex flex-col">
+  <div class="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800">
+    <span class="font-extrabold text-primary">Jivan TeleHealth</span>
+    <button onclick="MobileMenu.close()"><span class="material-symbols-outlined">close</span></button>
+  </div>
+  <nav class="flex flex-col gap-1 p-4">
+    <a href="index.html" class="px-4 py-3 rounded-xl hover:bg-primary/10 font-semibold text-sm">🏠 Home</a>
+    <a href="emg.html" class="px-4 py-3 rounded-xl hover:bg-red-50 text-red-500 font-semibold text-sm">🚨 Emergency</a>
+  </nav>
+</div>
+
+<!-- Header -->
+<header class="sticky top-0 z-30 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 lg:px-10 py-3">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-3">
+      <div class="bg-accent-red p-2 rounded-lg text-white"><span class="material-symbols-outlined">health_and_safety</span></div>
+      <div><h2 class="text-base font-bold leading-tight">Jivan TeleHealth</h2><p class="text-xs text-slate-500">Blood Donor Network</p></div>
+    </a>
+    <div class="flex items-center gap-2">
+      <button onclick="DarkMode.toggle()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+        <span class="material-symbols-outlined text-[20px]" data-dark-icon>dark_mode</span>
+      </button>
+      <button onclick="openRegisterModal()" class="hidden sm:flex items-center gap-2 px-4 py-2 bg-accent-red text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-colors">
+        <span class="material-symbols-outlined text-lg">volunteer_activism</span> Become a Donor
+      </button>
+      <button onclick="MobileMenu.open()" class="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600"><span class="material-symbols-outlined">menu</span></button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-8">
+  <!-- Hero -->
+  <div class="bg-gradient-to-r from-accent-red to-red-700 rounded-2xl p-8 text-white flex flex-col md:flex-row justify-between items-center gap-6">
+    <div>
+      <h1 class="text-3xl font-black mb-2">🩸 Blood Donor Finder</h1>
+      <p class="text-white/80">Find matching blood donors near you instantly in an emergency.</p>
+      <div class="flex gap-4 mt-4 text-sm font-bold">
+        <span id="total-donors-badge" class="bg-white/20 px-3 py-1 rounded-full">— Registered Donors</span>
+        <span class="bg-white/20 px-3 py-1 rounded-full">8 Blood Groups</span>
+      </div>
+    </div>
+    <button onclick="openRegisterModal()" class="bg-white text-accent-red px-8 py-4 rounded-xl font-black text-lg hover:scale-105 transition-transform shadow-lg whitespace-nowrap">
+      + Register as Donor
+    </button>
+  </div>
+
+  <!-- Search -->
+  <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+    <h2 class="text-lg font-bold mb-4">Search Donors</h2>
+    <div class="flex flex-col sm:flex-row gap-3">
+      <select id="search-blood" class="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-accent-red">
+        <option value="all">All Blood Groups</option>
+        <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+        <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+      </select>
+      <input id="search-city" type="text" placeholder="City (e.g. Mumbai, Delhi...)" class="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-accent-red"/>
+      <button onclick="searchDonors()" class="px-6 py-3 bg-accent-red text-white rounded-xl font-bold text-sm hover:bg-red-700 transition-colors">Search</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div>
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold">Available Donors</h2>
+      <span id="result-count" class="text-sm text-slate-500"></span>
+    </div>
+    <div id="donors-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <p class="text-slate-400 col-span-3 text-center py-8">Loading donors...</p>
+    </div>
+  </div>
+</main>
+
+<!-- Register Modal -->
+<div id="reg-modal" class="modal-bg" onclick="closeRegisterModal(event)">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="text-lg font-bold flex items-center gap-2">🩸 Register as Donor</h3>
+      <button onclick="closeRegisterModal()"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="space-y-4">
+      <div><label class="block text-sm font-semibold mb-1.5">Full Name *</label>
+        <input id="d-name" type="text" placeholder="Your name" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-accent-red"/></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="block text-sm font-semibold mb-1.5">Blood Group *</label>
+          <select id="d-blood" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none">
+            <option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+          </select></div>
+        <div><label class="block text-sm font-semibold mb-1.5">City *</label>
+          <input id="d-city" type="text" placeholder="Mumbai" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-accent-red"/></div>
+      </div>
+      <div><label class="block text-sm font-semibold mb-1.5">Phone Number *</label>
+        <input id="d-phone" type="tel" placeholder="9876543210" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-accent-red"/></div>
+    </div>
+    <div class="flex gap-3 mt-5">
+      <button onclick="closeRegisterModal()" class="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm">Cancel</button>
+      <button onclick="registerDonor()" class="flex-1 py-2.5 bg-accent-red text-white rounded-xl font-bold text-sm hover:bg-red-700">Register</button>
+    </div>
+  </div>
+</div>
+
+<footer class="border-t border-slate-200 dark:border-slate-800 py-6 px-4 mt-8 bg-white dark:bg-slate-900">
+  <p class="text-center text-xs text-slate-400">© <span data-year></span> Jivan TeleHealth Connect</p>
+</footer>
+<div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
+
+<script>
+const bloodColors = {'O+':'bg-red-500','O-':'bg-red-700','A+':'bg-orange-500','A-':'bg-orange-700','B+':'bg-blue-500','B-':'bg-blue-700','AB+':'bg-purple-500','AB-':'bg-purple-700'};
+
+window.addEventListener('DOMContentLoaded', async () => {
+  const result = await BloodBank.getAll();
+  if (result.ok) renderDonors(result.donors || []);
+  else renderDonors([]);
+});
+
+async function searchDonors() {
+  const blood = document.getElementById('search-blood').value;
+  const city  = document.getElementById('search-city').value;
+  const result = await BloodBank.search(blood, city);
+  renderDonors(result.ok ? result.donors : []);
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function renderDonors(donors) {
+  const grid = document.getElementById('donors-grid');
+  const allResult = await BloodBank.getAll();
+  const allCount = allResult.ok ? (allResult.donors||[]).length : donors.length;
+  document.getElementById('total-donors-badge').textContent = allCount + ' Registered Donors';
+  document.getElementById('result-count').textContent = donors.length + ' donors found';
+  if (!donors.length) {
+    grid.innerHTML = '<div class="col-span-3 text-center py-12"><p class="text-slate-400 text-4xl mb-3">🩸</p><p class="text-slate-500 font-semibold">No donors found for this search.</p><p class="text-slate-400 text-sm mt-1">Try a different blood group or city.</p></div>';
+    return;
+  }
+  grid.innerHTML = donors.map(d => `
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border ${d.available ? 'border-slate-200 dark:border-slate-800' : 'border-slate-100 dark:border-slate-800 opacity-60'} p-5 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex items-start justify-between mb-4">
+        <div class="w-12 h-12 rounded-xl ${bloodColors[d.bloodGroup] || 'bg-red-500'} text-white flex items-center justify-center font-black text-lg">${escHtml(d.bloodGroup)}</div>
+        <span class="text-xs font-bold px-2 py-1 rounded-full ${d.available ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}">${d.available ? 'Available' : 'Unavailable'}</span>
+      </div>
+      <h4 class="font-bold text-slate-900 dark:text-white mb-1">${escHtml(d.name)}</h4>
+      <p class="text-sm text-slate-500 flex items-center gap-1 mb-3"><span class="material-symbols-outlined text-sm">location_on</span>${escHtml(d.city)}</p>
+      ${d.available ? `<button onclick="contactDonor('${escHtml(d.name)}','${escHtml(d.phone)}')" class="w-full py-2 bg-accent-red/10 text-accent-red rounded-xl font-bold text-sm hover:bg-accent-red hover:text-white transition-colors flex items-center justify-center gap-2"><span class="material-symbols-outlined text-lg">call</span>Contact Donor</button>` : '<div class="w-full py-2 text-center text-slate-400 text-sm font-semibold">Currently unavailable</div>'}
+    </div>
+  `).join('');
+}
+
+function contactDonor(name, phone) {
+  showToast('Contacting ' + name + ' at +91 ' + phone, 'info', 4000);
+}
+
+function openRegisterModal() { document.getElementById('reg-modal').classList.add('open'); }
+function closeRegisterModal(e) {
+  if (!e || e.target === document.getElementById('reg-modal')) document.getElementById('reg-modal').classList.remove('open');
+}
+
+async function registerDonor() {
+  const name  = document.getElementById('d-name').value.trim();
+  const blood = document.getElementById('d-blood').value;
+  const city  = document.getElementById('d-city').value.trim();
+  const phone = document.getElementById('d-phone').value.trim();
+  if (!name || !blood || !city || !phone) { showToast('Please fill all fields', 'error'); return; }
+  const result = await BloodBank.register({ name, bloodGroup: blood, city, phone });
+  if (result.ok) {
+    const allResult = await BloodBank.getAll();
+    renderDonors(allResult.ok ? allResult.donors : []);
+    closeRegisterModal();
+    showToast('You are now registered as a blood donor! 🩸', 'success');
+    ['d-name','d-city','d-phone'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('d-blood').value = '';
+  } else {
+    showToast(result.msg || 'Registration failed.', 'error');
+  }
+}
+</script>
+
+<script src="chatbot-voice.js"></script>
+<script src="nav-auth.js"></script>
+</body>
+</html>
